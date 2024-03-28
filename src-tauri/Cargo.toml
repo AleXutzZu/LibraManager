@@ -1,8 +1,8 @@
 [package]
-name = "scheduling-app"
+name = "libra-manager"
 version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "An application for managing records in a library"
+authors = ["Alex David"]
 license = ""
 repository = ""
 edition = "2021"
