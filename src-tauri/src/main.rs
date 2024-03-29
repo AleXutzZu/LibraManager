@@ -7,9 +7,18 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+//TODO: Modify this to query the DB obviously
+#[tauri::command]
+fn get_library() -> String {
+    "Librarie".to_string()
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            get_library
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
