@@ -3,9 +3,12 @@
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
+use tauri::State;
+use libra_manager::database::DatabaseConnection;
+
 //TODO: Modify this to query the DB obviously
 #[tauri::command]
-fn get_library() -> String {
+fn get_library(data: State<DatabaseConnection>) -> String {
     "Librarie".to_string()
 }
 
@@ -14,6 +17,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_library
         ])
+        .manage(DatabaseConnection::new())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

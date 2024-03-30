@@ -2,7 +2,7 @@
 
 diesel::table! {
     books (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         title -> Text,
         author -> Text,
     }
@@ -10,7 +10,7 @@ diesel::table! {
 
 diesel::table! {
     users (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         username -> Text,
         firstName -> Text,
         lastName -> Text,
