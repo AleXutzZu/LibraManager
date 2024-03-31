@@ -21,6 +21,7 @@ pub type SerializedResult<T> = Result<T, Error>;
 
 pub mod database {
     use std::sync::Mutex;
+
     use diesel::{Connection, SqliteConnection};
     use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
@@ -44,6 +45,62 @@ pub mod database {
             DatabaseConnection {
                 client: Mutex::from(establish_connection(url))
             }
+        }
+    }
+}
+
+pub mod settings {
+    use std::fs::OpenOptions;
+    use std::io::{Read, Write};
+    use std::path::PathBuf;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Serialize, Deserialize)]
+    pub struct Settings {
+        pub library_name: String,
+    }
+
+    impl Default for Settings {
+        fn default() -> Self {
+            Self { library_name: "Librarie".to_string() }
+        }
+    }
+
+    pub struct Loader {
+        path: PathBuf,
+    }
+
+    impl Loader {
+        pub fn from(app_data_path: &PathBuf) -> Loader {
+            let mut npath = app_data_path.clone();
+            npath.push("settings.toml");
+
+            Loader {
+                path: npath
+            }
+        }
+
+        pub fn load(&self) -> Result<Settings, std::io::Error> {
+            match std::fs::File::open(&self.path) {
+                Ok(mut config) => {
+                  let mut contents: String = String::new();
+                    config.read_to_string(&mut contents)?;
+
+                    Ok(toml::from_str(&*contents).unwrap())
+                },
+                Err(ref e) if e.kind() == std::io::ErrorKind::NotFound => {
+                    self.store(Settings::default())?;
+                    Ok(Settings::default())
+                }
+                Err(e) => Err(e.into())
+            }
+        }
+
+        pub fn store(&self, config: Settings) -> Result<(), std::io::Error> {
+            let mut file = OpenOptions::new().write(true).create(true).open(&self.path)?;
+            let data = toml::to_string_pretty(&config).unwrap();
+            file.write_all(data.as_bytes())?;
+            Ok(())
         }
     }
 }

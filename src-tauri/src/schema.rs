@@ -9,6 +9,14 @@ diesel::table! {
 }
 
 diesel::table! {
+    clients (id) {
+        id -> Integer,
+        firstName -> Text,
+        lastName -> Text,
+    }
+}
+
+diesel::table! {
     users (username) {
         username -> Text,
         firstName -> Text,
@@ -19,5 +27,6 @@ diesel::table! {
 
 diesel::allow_tables_to_appear_in_same_query!(
     books,
+    clients,
     users,
 );

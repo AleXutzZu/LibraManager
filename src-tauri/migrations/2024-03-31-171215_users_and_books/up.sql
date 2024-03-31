@@ -1,4 +1,5 @@
 -- Your SQL goes here
+-- Your SQL goes here
 CREATE TABLE users
 (
     username  VARCHAR NOT NULL PRIMARY KEY,

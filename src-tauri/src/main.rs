@@ -3,13 +3,14 @@
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
-use tauri::{Manager};
+use tauri::{Manager, State};
 use libra_manager::database::DatabaseConnection;
+use libra_manager::settings::Loader;
 
-//TODO: Modify this to query the FS obviously
 #[tauri::command]
-fn get_library() -> String {
-    "Librarie".to_string()
+fn get_library(settings_loader: State<Loader>) -> String {
+    let settings = settings_loader.load().unwrap();
+    settings.library_name
 }
 
 fn main() {
@@ -24,9 +25,12 @@ fn main() {
                 std::fs::create_dir_all(&app_data_path).unwrap();
             }
 
+            app.manage(Loader::from(&app_data_path));
+
             app_data_path.push("database");
 
             app.manage(DatabaseConnection::from(app_data_path.to_str().unwrap()));
+
             Ok(())
         })
         .run(tauri::generate_context!())
