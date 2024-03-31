@@ -4,17 +4,17 @@ pub mod database {
     use serde::Serialize;
     use diesel::prelude::*;
 
-    #[derive(Queryable, Selectable, Serialize)]
+    #[derive(Queryable, Selectable, Serialize, Insertable)]
     #[diesel(table_name = crate::schema::users)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     #[serde(rename_all = "camelCase")]
     pub struct User {
-        pub id: i32,
         pub username: String,
         #[diesel(column_name = firstName)]
         pub first_name: String,
         #[diesel(column_name = lastName)]
         pub last_name: String,
+        pub role: String,
     }
 
     #[derive(Queryable, Selectable)]

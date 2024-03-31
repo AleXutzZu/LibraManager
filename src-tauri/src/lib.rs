@@ -12,10 +12,7 @@ pub enum Error {
 }
 
 impl serde::Serialize for Error {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: serde::ser::Serializer,
-    {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::ser::Serializer, {
         serializer.serialize_str(self.to_string().as_ref())
     }
 }
@@ -39,13 +36,13 @@ pub mod database {
     }
 
     pub struct DatabaseConnection {
-        client: Mutex<SqliteConnection>
+        pub client: Mutex<SqliteConnection>,
     }
 
     impl DatabaseConnection {
-        pub fn new() ->DatabaseConnection {
+        pub fn from(url: &str) -> DatabaseConnection {
             DatabaseConnection {
-                client: Mutex::from(establish_connection("libra-manager"))
+                client: Mutex::from(establish_connection(url))
             }
         }
     }

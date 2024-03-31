@@ -9,11 +9,11 @@ diesel::table! {
 }
 
 diesel::table! {
-    users (id) {
-        id -> Integer,
+    users (username) {
         username -> Text,
         firstName -> Text,
         lastName -> Text,
+        role -> Text,
     }
 }
 

@@ -5,7 +5,7 @@ export default function Navigation() {
     return (
         <>
             <div
-                className="flex justify-around items-center border-b-black-10 border-b-2 shadow-black-10 shadow-lg px-4 lg:px-10">
+                className="flex justify-around items-center border-b-black-10 border-b-2 shadow-black-10 shadow-lg px-4 lg:px-10 py-2">
                 <nav className="flex justify-around items-center w-2/3 py-1.5 mr-auto">
                     <NavLink to={"/page1"} className="text-xl lg:text-3xl">Link 1</NavLink>
                     <NavLink to={"/page2"} className="text-xl lg:text-3xl">Link 2</NavLink>
