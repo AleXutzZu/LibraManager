@@ -6,6 +6,9 @@ import {createBrowserRouter, NavLink, redirect, RouterProvider} from "react-rout
 import {authProvider} from "./auth/auth.ts";
 import HomePage from "./components/index/HomePage.tsx";
 import {loader as homePageLoader} from "./components/index/HomePage.tsx";
+import LoginPage from "./components/login/LoginPage.tsx";
+import {loader as loginLoader} from './components/login/LoginPage.tsx'
+import {action as loginAction} from './components/login/LoginPage.tsx'
 
 const router = createBrowserRouter([
     {
@@ -23,6 +26,12 @@ const router = createBrowserRouter([
                 index: true,
                 element: <HomePage/>,
                 loader: homePageLoader,
+            },
+            {
+                path: "login",
+                element: <LoginPage/>,
+                loader: loginLoader,
+                action: loginAction,
             }
         ]
     },

@@ -15,6 +15,8 @@ pub mod database {
         #[diesel(column_name = lastName)]
         pub last_name: String,
         pub role: String,
+        #[serde(skip_serializing)]
+        pub password: String,
     }
 
     #[derive(Queryable, Selectable)]

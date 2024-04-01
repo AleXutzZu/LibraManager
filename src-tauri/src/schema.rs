@@ -19,6 +19,7 @@ diesel::table! {
 diesel::table! {
     users (username) {
         username -> Text,
+        password -> Text,
         firstName -> Text,
         lastName -> Text,
         role -> Text,

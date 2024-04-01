@@ -9,6 +9,8 @@ pub enum Error {
     Diesel(#[from] diesel::result::Error),
     #[error(transparent)]
     SerdeJson(#[from] serde_json::Error),
+    #[error("Authentication error")]
+    AuthError
 }
 
 impl serde::Serialize for Error {

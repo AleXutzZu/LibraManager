@@ -1,3 +1,5 @@
+import {invoke} from "@tauri-apps/api/tauri";
+
 export interface User {
     username: string,
     firstName: string,
@@ -15,28 +17,14 @@ interface AuthProvider {
 export const authProvider: AuthProvider = {
     isAuthenticated: false,
 
-    user: {
-        username: "a",
-        firstName: "Anastasia-Maria",
-        lastName: "b",
-        role: "user",
-    },
+    user: undefined,
 
     async login(username: string, password: string) {
-        await new Promise((r) => setTimeout(r, 1000));
-        //
-        authProvider.isAuthenticated = true;
-        authProvider.user = {
-            username: username,
-            firstName: "b",
-            lastName: "b",
-            role: "admin",
-        }
+        this.user = await invoke("login", {username, password});
+        this.isAuthenticated = true;
     },
 
     async logout() {
-        //
-        await new Promise((r) => setTimeout(r, 1000));
         authProvider.isAuthenticated = false;
         authProvider.user = undefined;
     }
