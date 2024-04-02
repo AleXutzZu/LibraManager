@@ -68,16 +68,16 @@ pub mod settings {
         }
     }
 
-    pub struct Loader {
+    pub struct SettingsLoader {
         path: PathBuf,
     }
 
-    impl Loader {
-        pub fn from(app_data_path: &PathBuf) -> Loader {
+    impl SettingsLoader {
+        pub fn from(app_data_path: &PathBuf) -> Self {
             let mut npath = app_data_path.clone();
             npath.push("settings.toml");
 
-            Loader {
+            Self {
                 path: npath
             }
         }

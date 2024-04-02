@@ -10,10 +10,10 @@ use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
 use libra_manager::models::database::User;
 use libra_manager::SerializedResult;
-use libra_manager::settings::Loader;
+use libra_manager::settings::SettingsLoader;
 
 #[tauri::command]
-fn get_library(settings_loader: State<Loader>) -> String {
+fn get_library(settings_loader: State<SettingsLoader>) -> String {
     let settings = settings_loader.load().unwrap();
     settings.library_name
 }
@@ -45,7 +45,7 @@ fn main() {
                 std::fs::create_dir_all(&app_data_path).unwrap();
             }
 
-            app.manage(Loader::from(&app_data_path));
+            app.manage(SettingsLoader::from(&app_data_path));
 
             app_data_path.push("database");
 
