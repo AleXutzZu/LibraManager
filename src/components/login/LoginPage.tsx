@@ -36,8 +36,8 @@ export default function LoginPage() {
     const error = useActionData() as { error: string } | undefined;
 
     return (
-        <div>
-            <Form method="post" replace>
+        <div className="flex items-center justify-center">
+            <Form method="post" replace className="flex items-center justify-center flex-col h-40 bg-red">
                 <label>Username: <input name="username"/></label>
                 <label>Password: <input name="password"/></label>
 

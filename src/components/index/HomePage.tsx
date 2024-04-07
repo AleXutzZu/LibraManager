@@ -10,7 +10,7 @@ export default function HomePage() {
     const {library} = useLoaderData() as { library: string };
 
     return (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center mb-auto">
             <h1 className="text-4xl lg:text-5xl">Bun venit in portalul bibliotecii <span className="font-bold">{library}</span></h1>
         </div>
     )
