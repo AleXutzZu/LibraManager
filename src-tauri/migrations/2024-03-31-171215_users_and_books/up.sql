@@ -1,5 +1,4 @@
 -- Your SQL goes here
--- Your SQL goes here
 CREATE TABLE users
 (
     username  VARCHAR NOT NULL PRIMARY KEY,
@@ -11,9 +10,9 @@ CREATE TABLE users
 
 CREATE TABLE books
 (
-    id     INT UNIQUE PRIMARY KEY NOT NULL,
-    title  VARCHAR                NOT NULL,
-    author VARCHAR                NOT NULL
+    isbn   VARCHAR UNIQUE PRIMARY KEY NOT NULL,
+    title  VARCHAR                    NOT NULL,
+    author VARCHAR                    NOT NULL
 );
 
 INSERT INTO users(username, password, firstName, lastName, role)

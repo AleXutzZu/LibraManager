@@ -4,11 +4,12 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
 
-use diesel::{QueryDsl, RunQueryDsl};
+use diesel::{QueryDsl, RunQueryDsl, SelectableHelper};
 use tauri::{Manager, State};
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
-use libra_manager::models::database::User;
+use libra_manager::models::database::{Book, User};
+use libra_manager::schema::books::dsl::books;
 use libra_manager::SerializedResult;
 use libra_manager::settings::SettingsLoader;
 
@@ -32,11 +33,19 @@ fn login(database: State<DatabaseConnection>, username: String, password: String
     Err(AuthError)
 }
 
+#[tauri::command]
+fn fetch_books(database: State<DatabaseConnection>) -> SerializedResult<Vec<Book>> {
+    let client = &mut *database.client.lock().unwrap();
+    let result = books.select(Book::as_select()).load(client)?;
+    Ok(result)
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_library,
-            login
+            login,
+            fetch_books
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();

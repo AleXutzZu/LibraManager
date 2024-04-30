@@ -19,11 +19,11 @@ pub mod database {
         pub password: String,
     }
 
-    #[derive(Queryable, Selectable)]
+    #[derive(Queryable, Selectable, Serialize)]
     #[diesel(table_name = crate::schema::books)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     pub struct Book {
-        pub id: i32,
+        pub isbn: String,
         pub title: String,
         pub author: String,
     }
