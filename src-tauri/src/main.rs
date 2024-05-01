@@ -4,7 +4,7 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
 
-use diesel::{QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use tauri::{Manager, State};
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
@@ -40,12 +40,20 @@ fn fetch_books(database: State<DatabaseConnection>) -> SerializedResult<Vec<Book
     Ok(result)
 }
 
+#[tauri::command]
+fn fetch_book(database: State<DatabaseConnection>, isbn: String) -> SerializedResult<Option<Book>> {
+    let client = &mut *database.client.lock().unwrap();
+    let result = books.find(isbn).get_result(client).optional()?;
+    Ok(result)
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_library,
             login,
-            fetch_books
+            fetch_books,
+            fetch_book
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();
