@@ -1,5 +1,6 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {Book} from "./BooksPage.tsx";
+import {useLoaderData} from "react-router-dom";
 
 export async function loader({params}: { params: any }) {
     const book = await invoke("fetch_book", {isbn: params.isbn});
@@ -8,5 +9,7 @@ export async function loader({params}: { params: any }) {
 }
 
 export default function BookInfo() {
+    const {book} = useLoaderData() as { book: Book };
+    console.log(book);
     return <>Test</>
 }
