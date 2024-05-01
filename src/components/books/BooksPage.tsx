@@ -3,7 +3,7 @@ import {invoke} from "@tauri-apps/api/tauri";
 import ScanIcon from "../util/ScanIcon.tsx"
 import {useState} from "react";
 import Scanner from "../util/Scanner.tsx";
-import {Result} from "@zxing/library";
+import {DecodeHintType, Result} from "@zxing/library";
 
 export interface Book {
     isbn: string,
@@ -31,6 +31,9 @@ export default function BooksPage() {
         const isbn = result.getText();
         navigate(`/books/${isbn}`);
     }
+
+    const decodeHints = new Map<DecodeHintType, any>();
+    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"])
 
     return (
         <div className="flex h-full">
