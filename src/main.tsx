@@ -9,6 +9,10 @@ import {loader as homePageLoader} from "./components/index/HomePage.tsx";
 import LoginPage from "./components/login/LoginPage.tsx";
 import {loader as loginLoader} from './components/login/LoginPage.tsx'
 import {action as loginAction} from './components/login/LoginPage.tsx'
+import BooksPage from "./components/books/BooksPage.tsx";
+import {loader as booksLoader} from "./components/books/BooksPage.tsx"
+import BookInfo from "./components/books/BookInfo.tsx";
+import {loader as bookInfoLoader} from "./components/books/BookInfo.tsx"
 
 const router = createBrowserRouter([
     {
@@ -32,6 +36,22 @@ const router = createBrowserRouter([
                 element: <LoginPage/>,
                 loader: loginLoader,
                 action: loginAction,
+            },
+            {
+                path: "books",
+                element: <BooksPage/>,
+                loader: booksLoader,
+                children: [
+                    {
+                        index: true,
+                        element: <>Index for books</>
+                    },
+                    {
+                        path: ":isbn",
+                        element: <BookInfo/>,
+                        loader: bookInfoLoader,
+                    }
+                ]
             }
         ]
     },
