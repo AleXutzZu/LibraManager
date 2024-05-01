@@ -1,9 +1,8 @@
 import {Link, Outlet, useLoaderData, useNavigate} from "react-router-dom";
 import {invoke} from "@tauri-apps/api/tauri";
-import ScanIcon from "../util/ScanIcon.tsx"
 import {useState} from "react";
-import Scanner from "../util/Scanner.tsx";
 import {DecodeHintType, Result} from "@zxing/library";
+import Scanner from "../util/Scanner.tsx";
 
 export interface Book {
     isbn: string,
@@ -19,15 +18,9 @@ export async function loader() {
 export default function BooksPage() {
     const {books} = useLoaderData() as { books: Book[] };
     const [search, setSearch] = useState("");
-    const [showScanner, setShowScanner] = useState(false);
     const navigate = useNavigate();
 
-    const closeScanner = () => {
-        setShowScanner(false);
-    }
-
     const onDecode = (result: Result) => {
-        closeScanner();
         const isbn = result.getText();
         navigate(`/books/${isbn}`);
     }
@@ -40,11 +33,7 @@ export default function BooksPage() {
             <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center px-2 justify-around">
                 <form className="flex px-2 justify-between">
                     <input value={search} className="w-4/5" onChange={(event) => setSearch(event.target.value)}/>
-                    <ScanIcon onClick={() => setShowScanner(!showScanner)}/>
-
-                    {showScanner && <Scanner onDecodeResult={onDecode}
-                                             onClose={closeScanner}/>
-                    }
+                    <Scanner onDecode={onDecode}/>
 
                 </form>
                 <div className="flex flex-col">
