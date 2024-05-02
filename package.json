@@ -14,6 +14,7 @@
     "formik": "^2.4.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-media-devices": "^1.1.5",
     "react-router-dom": "^6.22.3",
     "react-zxing": "^2.0.0",
     "yup": "^1.4.0"
