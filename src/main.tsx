@@ -47,9 +47,14 @@ const router = createBrowserRouter([
                         element: <>Index for books</>
                     },
                     {
+                        path: "create",
+                        element: <>Add book</>
+                    },
+                    {
                         path: ":isbn",
                         element: <BookInfo/>,
                         loader: bookInfoLoader,
+                        errorElement: <>Woo not found</>,
                     }
                 ]
             }

@@ -30,13 +30,12 @@ export default function BooksPage() {
 
     return (
         <div className="flex h-full">
-            <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center px-2 justify-around">
-                <form className="flex px-2 justify-between">
+            <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center px-4 justify-start">
+                <form className="flex justify-between py-4 w-full">
                     <input value={search} className="w-4/5" onChange={(event) => setSearch(event.target.value)}/>
-                    <Scanner onDecode={onDecode}/>
-
+                    <Scanner onDecode={onDecode} hints={decodeHints}/>
                 </form>
-                <div className="flex flex-col">
+                <div className="flex flex-col items-start w-full">
                     {books.map(book => <BookLink {...book} key={book.isbn}/>
                     )}
                 </div>
