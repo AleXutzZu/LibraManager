@@ -12,7 +12,8 @@ CREATE TABLE books
 (
     isbn   VARCHAR UNIQUE PRIMARY KEY NOT NULL,
     title  VARCHAR                    NOT NULL,
-    author VARCHAR                    NOT NULL
+    author VARCHAR                    NOT NULL,
+    items  INT                        NOT NULL
 );
 
 INSERT INTO users(username, password, firstName, lastName, role)

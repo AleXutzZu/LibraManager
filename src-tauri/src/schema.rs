@@ -5,6 +5,7 @@ diesel::table! {
         isbn -> Text,
         title -> Text,
         author -> Text,
+        items -> Integer,
     }
 }
 

@@ -6,12 +6,14 @@
 
 use diesel::{OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use tauri::{Manager, State};
+
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
 use libra_manager::models::database::{Book, User};
 use libra_manager::schema::books::dsl::books;
 use libra_manager::SerializedResult;
 use libra_manager::settings::SettingsLoader;
+use diesel::associations::HasTable;
 
 #[tauri::command]
 fn get_library(settings_loader: State<SettingsLoader>) -> String {
@@ -47,13 +49,24 @@ fn fetch_book(database: State<DatabaseConnection>, isbn: String) -> SerializedRe
     Ok(result)
 }
 
+#[tauri::command]
+fn create_book(database: State<DatabaseConnection>, isbn: String, title: String, author: String, items: i32) -> SerializedResult<()> {
+    let client = &mut *database.client.lock().unwrap();
+
+    let book = Book { isbn, title, author, items };
+
+    diesel::insert_into(books::table()).values(&book).execute(client)?;
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_library,
             login,
             fetch_books,
-            fetch_book
+            fetch_book,
+            create_book
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();
