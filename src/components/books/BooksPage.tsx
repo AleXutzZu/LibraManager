@@ -4,7 +4,7 @@ import {useState} from "react";
 import {DecodeHintType, Result} from "@zxing/library";
 import Scanner from "../util/Scanner.tsx";
 
-export interface Book {
+export type Book = {
     isbn: string,
     author: string,
     title: string,
@@ -36,7 +36,8 @@ export default function BooksPage() {
                     <input value={search} className="w-4/5" onChange={(event) => setSearch(event.target.value)}/>
                     <Scanner onDecode={onDecode} hints={decodeHints}/>
                 </form>
-                <Link to="create" className="w-32 bg-orange text-black-5 text-center font-bold rounded-xl">Adaugă carte</Link>
+                <Link to="create" className="w-32 bg-orange text-black-5 text-center font-bold rounded-xl">Adaugă
+                    carte</Link>
                 <div className="flex flex-col items-start w-full">
                     {books.map(book => <BookLink {...book} key={book.isbn}/>
                     )}

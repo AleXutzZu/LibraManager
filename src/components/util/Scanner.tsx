@@ -4,7 +4,7 @@ import {DecodeHintType} from "react-zxing";
 import ScanIcon from "./ScanIcon.tsx";
 import ScannerModal from "./ScannerModal.tsx";
 
-interface Props {
+type Props = {
     hints?: Map<DecodeHintType, any>,
     onDecode: (result: Result) => void
 }
