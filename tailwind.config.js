@@ -16,6 +16,7 @@ export default {
                 10: '#e8e8e8',
                 5: '#f4f3f3',
             },
+            'green': '#359302'
         },
         extend: {},
     },

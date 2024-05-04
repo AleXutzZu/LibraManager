@@ -27,7 +27,7 @@ export default function BooksPage() {
     }
 
     const decodeHints = new Map<DecodeHintType, any>();
-    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"])
+    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"]);
 
     return (
         <div className="flex h-full">
@@ -36,17 +36,15 @@ export default function BooksPage() {
                     <input value={search} className="w-4/5" onChange={(event) => setSearch(event.target.value)}/>
                     <Scanner onDecode={onDecode} hints={decodeHints}/>
                 </form>
-                <Link to="create" className="w-32 bg-orange text-black-5 text-center font-bold rounded-xl">Adaugă
+                <Link to="create" className="px-2.5 py-2.5 bg-orange text-black-5 text-center font-medium text-sm rounded-2xl">Adaugă
                     carte</Link>
-                <div className="flex flex-col items-start w-full">
+                <div className="flex flex-col items-start w-full overflow-auto">
                     {books.map(book => <BookLink {...book} key={book.isbn}/>
                     )}
                 </div>
 
             </div>
-            <div>
-                <Outlet/>
-            </div>
+            <Outlet/>
         </div>)
 }
 

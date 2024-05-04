@@ -7,12 +7,14 @@ import {authProvider} from "./auth/auth.ts";
 import HomePage from "./components/index/HomePage.tsx";
 import {loader as homePageLoader} from "./components/index/HomePage.tsx";
 import LoginPage from "./components/login/LoginPage.tsx";
-import {loader as loginLoader} from './components/login/LoginPage.tsx'
-import {action as loginAction} from './components/login/LoginPage.tsx'
+import {loader as loginLoader} from './components/login/LoginPage.tsx';
+import {action as loginAction} from './components/login/LoginPage.tsx';
 import BooksPage from "./components/books/BooksPage.tsx";
-import {loader as booksLoader} from "./components/books/BooksPage.tsx"
+import {loader as booksLoader} from "./components/books/BooksPage.tsx";
 import BookInfo from "./components/books/BookInfo.tsx";
-import {loader as bookInfoLoader} from "./components/books/BookInfo.tsx"
+import {loader as bookInfoLoader} from "./components/books/BookInfo.tsx";
+import BookAdd from "./components/books/BookAdd.tsx";
+import {action as bookAddAction} from "./components/books/BookAdd.tsx";
 
 const router = createBrowserRouter([
     {
@@ -48,7 +50,8 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "create",
-                        element: <>Add book</>
+                        element: <BookAdd/>,
+                        action: bookAddAction
                     },
                     {
                         path: ":isbn",
