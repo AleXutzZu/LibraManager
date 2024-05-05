@@ -4,7 +4,7 @@
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 
 
-use diesel::{OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+use diesel::{ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
 use tauri::{Manager, State};
 
 use libra_manager::database::DatabaseConnection;
@@ -79,6 +79,14 @@ fn create_client(database: State<DatabaseConnection>, client: Client) -> Seriali
     Ok(())
 }
 
+#[tauri::command]
+fn delete_client(database: State<DatabaseConnection>, id: String) -> SerializedResult<()> {
+    let client = &mut *database.client.lock().unwrap();
+    let client_id = id;
+    diesel::delete(clients.filter(libra_manager::schema::clients::id.eq(client_id))).execute(client)?;
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -89,7 +97,8 @@ fn main() {
             create_book,
             fetch_clients,
             fetch_client,
-            create_client
+            create_client,
+            delete_client
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();
