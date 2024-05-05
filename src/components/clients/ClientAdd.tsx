@@ -36,10 +36,10 @@ export async function action({request}: { request: Request }): Promise<ClientRes
 export default function ClientAdd() {
     const validationSchema = Yup.object({
         id: Yup.string(),
-        firstName: Yup.string().required("Prenumele este obligatoriu"),
-        lastName: Yup.string().required("Numele este obligatoriu"),
-        email: Yup.string().email("Email-ul este invalid").required("Email-ul este obligatoriu"),
-        phone: Yup.string().required("Numărul este obligatoriu").matches(/^(0\d{9})$/, {message:"Numărul este invalid"}),
+        firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^\w+$/, {message: "Prenumele este invalid"}),
+        lastName: Yup.string().required("Numele este obligatoriu").matches(/^\w+$/, {message: "Numele este invalid"}),
+        email: Yup.string().matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {message: "Email-ul este invalid"}).required("Email-ul este obligatoriu"),
+        phone: Yup.string().required("Numărul este obligatoriu").matches(/^(0\d{9})$/, {message: "Numărul este invalid"}),
     })
 
     const submit = useSubmit();
@@ -61,46 +61,48 @@ export default function ClientAdd() {
                     submit(values, {method: "post"});
                 }}>
             {formik => (
-                <section className="bg-black-5 m-auto rounded-xl shadow-black-10 shadow-md">
-                    <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-                        {!data && <h2 className="mb-4 text-xl font-bold">Adaugă un nou client</h2>}
-                        {data && (data.ok ? <h2 className="mb-4 text-xl font-bold text-green">{data.message}</h2> :
-                            <h2 className="mb-4 text-xl font-bold text-red">{data.message}</h2>)}
-                        <Form>
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="w-full">
-                                    <Input label="Prenume" type="text" name="firstName"
-                                           className="border text-sm rounded-lg block w-full p-2.5"
-                                           placeholder="Prenume"/>
+                <div className="overflow-auto flex-grow flex items-center justify-center">
+                    <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5">
+                        <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+                            {!data && <h2 className="mb-4 text-2xl font-bold">Adaugă un nou client</h2>}
+                            {data && (data.ok ? <h2 className="mb-4 text-2xl font-bold text-green">{data.message}</h2> :
+                                <h2 className="mb-4 text-2xl font-bold text-red">{data.message}</h2>)}
+                            <Form>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="w-full">
+                                        <Input label="Prenume" type="text" name="firstName"
+                                               className="border text-sm rounded-lg block w-full p-2.5"
+                                               placeholder="Prenume"/>
+                                    </div>
+                                    <div className="w-full">
+                                        <Input label="Nume" type="text" name="lastName"
+                                               className="border text-sm rounded-lg block w-full p-2.5"
+                                               placeholder="Nume"/>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <Input label="Adresa de email" type="text" name="email"
+                                               className="border text-sm rounded-lg block w-full p-2.5"
+                                               placeholder="Tastează adresa de email"/>
+                                    </div>
+                                    <div className="w-full">
+                                        <Input label="ID Utilizator" type="text" name="id"
+                                               className="border text-sm rounded-lg block w-full p-2.5"
+                                               placeholder="ID" disabled/>
+                                    </div>
+                                    <div className="w-full">
+                                        <Input label="Telefon" type="text" name="phone"
+                                               className="border text-sm rounded-lg block w-full p-2.5"
+                                               placeholder="Numărul de telefon"/>
+                                    </div>
                                 </div>
-                                <div className="w-full">
-                                    <Input label="Nume" type="text" name="lastName"
-                                           className="border text-sm rounded-lg block w-full p-2.5"
-                                           placeholder="Nume"/>
-                                </div>
-                                <div className="col-span-2">
-                                    <Input label="Adresa de email" type="text" name="email"
-                                           className="border text-sm rounded-lg block w-full p-2.5"
-                                           placeholder="Tastează adresa de email"/>
-                                </div>
-                                <div className="w-full">
-                                    <Input label="ID Utilizator" type="text" name="id"
-                                           className="border text-sm rounded-lg block w-full p-2.5"
-                                           placeholder="ID" disabled/>
-                                </div>
-                                <div className="w-full">
-                                    <Input label="Telefon" type="text" name="phone"
-                                           className="border text-sm rounded-lg block w-full p-2.5"
-                                           placeholder="Numărul de telefon"/>
-                                </div>
-                            </div>
-                            <button type="submit" disabled={formik.isSubmitting}
-                                    className="inline-flex items-center px-2.5 py-2.5 mt-6 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
-                                Adaugă client
-                            </button>
-                        </Form>
+                                <button type="submit" disabled={formik.isSubmitting}
+                                        className="inline-flex items-center px-2.5 py-2.5 mt-6 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
+                                    Adaugă client
+                                </button>
+                            </Form>
+                        </div>
                     </div>
-                </section>
+                </div>
             )}
         </Formik>
     )

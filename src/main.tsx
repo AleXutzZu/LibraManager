@@ -11,6 +11,11 @@ import BookInfo, {loader as bookInfoLoader} from "./components/books/BookInfo.ts
 import BookAdd, {action as bookAddAction} from "./components/books/BookAdd.tsx";
 import ClientsPage, {loader as clientsLoader} from "./components/clients/ClientsPage.tsx";
 import ClientAdd, {action as clientAddAction} from "./components/clients/ClientAdd.tsx";
+import ClientInfo, {
+    loader as clientInfoLoader,
+    action as deleteClientAction
+} from "./components/clients/ClientInfo.tsx";
+import ClientEdit, {action as clientEditAction} from "./components/clients/ClientEdit.tsx";
 
 const router = createBrowserRouter([
     {
@@ -71,8 +76,21 @@ const router = createBrowserRouter([
                     },
                     {
                         path: ":clientId",
-                        element: <>Client</>,
-                        errorElement: <>Woo not found client</>
+                        element: <ClientInfo/>,
+                        loader: clientInfoLoader,
+                        errorElement: <>Woo not found client</>,
+                        children: [
+                            {
+                                path: "delete",
+                                action: deleteClientAction,
+                            }
+                        ]
+                    },
+                    {
+                        path: ":clientId/edit",
+                        loader: clientInfoLoader,
+                        action: clientEditAction,
+                        element: <ClientEdit/>
                     }
                 ]
             }
