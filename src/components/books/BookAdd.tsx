@@ -1,11 +1,11 @@
 import {Book} from "./BooksPage.tsx";
 import {invoke} from "@tauri-apps/api/tauri";
 import * as Yup from "yup";
-import {Form, Formik, useField} from "formik";
+import {Form, Formik} from "formik";
 import {useActionData, useSubmit} from "react-router-dom";
 import Scanner from "../util/Scanner.tsx";
-import {ReactNode} from "react";
 import {DecodeHintType} from "@zxing/library";
+import Input from "../util/Input.tsx";
 
 type BookResponse = {
     ok: boolean,
@@ -99,32 +99,3 @@ export default function BookAdd() {
     )
 }
 
-type Props = {
-    className?: string,
-    placeholder?: string,
-    children?: ReactNode,
-    label: string,
-    type: string,
-    name: string,
-}
-
-const Input = ({label, children, ...props}: Props) => {
-    const [field, meta] = useField({...props})
-
-    const labelErrorClasses: string = "block mb-2 text-sm font-medium text-red";
-
-    return (
-        <>
-            {meta.touched && meta.error ?
-                <label htmlFor={props.name}
-                       className={labelErrorClasses}>{meta.error}</label>
-                :
-                <label htmlFor={props.name}
-                       className="block mb-2 text-sm font-medium">{label}</label>}
-            <div className="flex space-x-1.5">
-                <input {...field} {...props}/>
-                {children}
-            </div>
-        </>
-    )
-}

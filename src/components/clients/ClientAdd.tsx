@@ -1,8 +1,9 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import * as Yup from "yup";
-import {Form, Formik, useField} from "formik";
+import {Form, Formik} from "formik";
 import {useActionData, useSubmit} from "react-router-dom";
 import {Client, translator} from "./ClientsPage.tsx";
+import Input from "../util/Input.tsx";
 
 type ClientResponse = {
     ok: boolean,
@@ -105,32 +106,5 @@ export default function ClientAdd() {
                 </div>
             )}
         </Formik>
-    )
-}
-
-type Props = {
-    className?: string,
-    placeholder?: string,
-    disabled?: boolean,
-    label: string,
-    type: string,
-    name: string,
-}
-
-const Input = ({label, ...props}: Props) => {
-    const [field, meta] = useField({...props})
-
-    const labelErrorClasses: string = "block mb-2 text-sm font-medium text-red";
-
-    return (
-        <>
-            {meta.touched && meta.error ?
-                <label htmlFor={props.name}
-                       className={labelErrorClasses}>{meta.error}</label>
-                :
-                <label htmlFor={props.name}
-                       className="block mb-2 text-sm font-medium">{label}</label>}
-            <input {...field} {...props}/>
-        </>
     )
 }
