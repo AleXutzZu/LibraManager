@@ -7,7 +7,7 @@ export default function Navigation() {
             className="flex justify-around items-center border-b-black-10 border-b-2 shadow-black-10 shadow-lg px-4 lg:px-10 py-2">
             <nav className="flex justify-around items-center w-2/3 py-1.5 mr-auto">
                 <NavLink to={"/books"} className="text-xl lg:text-3xl">Cărți</NavLink>
-                <NavLink to={"/page2"} className="text-xl lg:text-3xl">Link 2</NavLink>
+                <NavLink to={"/clients"} className="text-xl lg:text-3xl">Clienți</NavLink>
                 <NavLink to={"/page3"} className="text-xl lg:text-3xl">Link 3</NavLink>
             </nav>
             <AuthStatus/>

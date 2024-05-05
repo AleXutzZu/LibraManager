@@ -22,10 +22,10 @@ export async function action({request}: { request: Request }): Promise<BookRespo
     const book: Book = {isbn, title, author, items};
 
     try {
-        await invoke("create_book", {...book});
+        await invoke("create_book", {book});
         return {
             ok: true,
-            message: "Carte adaugată cu succes"
+            message: "Carte adăugată cu succes"
         }
     } catch (error) {
         return {
