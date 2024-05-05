@@ -1,8 +1,8 @@
 import short from "short-uuid";
 import Scanner from "../util/Scanner.tsx";
-import {Link, Outlet, useLoaderData, useNavigation} from "react-router-dom";
-import {useState} from "react";
-import {DecodeHintType} from "@zxing/library";
+import {Link, Outlet, useLoaderData, useNavigate} from "react-router-dom";
+import {useMemo, useState} from "react";
+import {DecodeHintType, Result} from "@zxing/library";
 import {invoke} from "@tauri-apps/api/tauri";
 
 export const translator = short(short.constants.cookieBase90);
@@ -27,14 +27,24 @@ export async function loader(): Promise<LoaderData> {
 export default function ClientsPage() {
     const [search, setSearch] = useState("");
     const {clients} = useLoaderData() as LoaderData;
-    const navigation = useNavigation();
+    const navigate = useNavigate();
 
-    const onDecode = () => {
-
+    const onDecode = (result: Result) => {
+        const id_short = result.getText();
+        const id = translator.toUUID(id_short);
+        navigate(`/clients/${id}`);
     }
 
     const decodeHints = new Map<DecodeHintType, any>();
     decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["Code 128"]);
+
+    const filtered = useMemo((): Client[] => {
+        const expression = new RegExp(search, "i");
+        return clients.filter((client) => {
+            const fullName = `${client.firstName} ${client.lastName}`;
+            return fullName.search(expression) > -1 || client.email.search(expression) > -1 || client.phone.search(expression) > -1;
+        })
+    }, [clients, search]);
 
     return <div className="flex h-full overflow-auto">
         <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center justify-start">
@@ -47,10 +57,10 @@ export default function ClientsPage() {
                   className="px-2.5 py-2.5 bg-orange text-black-5 text-center font-medium text-sm rounded-2xl">
                 Adaugă client
             </Link>
-            {clients.length === 0 && <p className="font-medium mt-3">Nu există clienți</p>}
+            {filtered.length === 0 && <p className="font-medium mt-3">Nu există clienți</p>}
             <div
                 className="flex flex-col items-start w-full overflow-auto h-4/5 max-h-fit scrollbar-thin pl-4 pr-0.5">
-                {clients.map(client => <ClientLink {...client} key={client.id}/>)}
+                {filtered.map(client => <ClientLink {...client} key={client.id}/>)}
             </div>
         </div>
         <Outlet/>
