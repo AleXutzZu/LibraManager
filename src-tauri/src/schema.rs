@@ -11,9 +11,11 @@ diesel::table! {
 
 diesel::table! {
     clients (id) {
-        id -> Integer,
+        id -> Text,
         firstName -> Text,
         lastName -> Text,
+        email -> Text,
+        phone -> Text,
     }
 }
 
