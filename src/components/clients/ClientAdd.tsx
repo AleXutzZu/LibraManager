@@ -39,7 +39,7 @@ export default function ClientAdd() {
         firstName: Yup.string().required("Prenumele este obligatoriu"),
         lastName: Yup.string().required("Numele este obligatoriu"),
         email: Yup.string().email("Email-ul este invalid").required("Email-ul este obligatoriu"),
-        phone: Yup.string().required("Numărul este obligatoriu"),
+        phone: Yup.string().required("Numărul este obligatoriu").matches(/^(0\d{9})$/, {message:"Numărul este invalid"}),
     })
 
     const submit = useSubmit();
