@@ -9,11 +9,12 @@ use tauri::{Manager, State};
 
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
-use libra_manager::models::database::{Book, User};
+use libra_manager::models::database::{Book, Client, User};
 use libra_manager::schema::books::dsl::books;
 use libra_manager::SerializedResult;
 use libra_manager::settings::SettingsLoader;
 use diesel::associations::HasTable;
+use libra_manager::schema::clients::dsl::clients;
 
 #[tauri::command]
 fn get_library(settings_loader: State<SettingsLoader>) -> String {
@@ -50,12 +51,31 @@ fn fetch_book(database: State<DatabaseConnection>, isbn: String) -> SerializedRe
 }
 
 #[tauri::command]
-fn create_book(database: State<DatabaseConnection>, isbn: String, title: String, author: String, items: i32) -> SerializedResult<()> {
+fn create_book(database: State<DatabaseConnection>, book: Book) -> SerializedResult<()> {
     let client = &mut *database.client.lock().unwrap();
-
-    let book = Book { isbn, title, author, items };
-
     diesel::insert_into(books::table()).values(&book).execute(client)?;
+    Ok(())
+}
+
+#[tauri::command]
+fn fetch_clients(database: State<DatabaseConnection>) -> SerializedResult<Vec<Client>> {
+    let client = &mut *database.client.lock().unwrap();
+    let result = clients.select(Client::as_select()).load(client)?;
+    Ok(result)
+}
+
+#[tauri::command]
+fn fetch_client(database: State<DatabaseConnection>, id: String) -> SerializedResult<Option<Client>> {
+    let client = &mut *database.client.lock().unwrap();
+    let result = clients.find(id).get_result(client).optional()?;
+    Ok(result)
+}
+
+#[tauri::command]
+fn create_client(database: State<DatabaseConnection>, client: Client) -> SerializedResult<()> {
+    let db_client = &mut *database.client.lock().unwrap();
+
+    diesel::insert_into(clients::table()).values(&client).execute(db_client)?;
     Ok(())
 }
 
@@ -66,7 +86,10 @@ fn main() {
             login,
             fetch_books,
             fetch_book,
-            create_book
+            create_book,
+            fetch_clients,
+            fetch_client,
+            create_client
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();

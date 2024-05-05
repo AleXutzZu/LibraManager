@@ -1,6 +1,6 @@
 pub mod database {
     use diesel::{Queryable, Selectable};
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
     use diesel::prelude::*;
 
     #[derive(Queryable, Selectable, Serialize, Insertable)]
@@ -18,7 +18,7 @@ pub mod database {
         pub password: String,
     }
 
-    #[derive(Queryable, Selectable, Serialize, Insertable)]
+    #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize)]
     #[diesel(table_name = crate::schema::books)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     pub struct Book {
@@ -28,7 +28,7 @@ pub mod database {
         pub items: i32,
     }
 
-    #[derive(Queryable, Selectable, Serialize, Insertable)]
+    #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize)]
     #[diesel(table_name = crate::schema::clients)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     #[serde(rename_all = "camelCase")]
