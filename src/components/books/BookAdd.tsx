@@ -49,8 +49,6 @@ export default function BookAdd() {
     const decodeHints = new Map<DecodeHintType, any>();
     decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"]);
 
-    console.log(data);
-
     return (
         <Formik initialValues={{title: "", author: "", isbn: "", items: 1}} validationSchema={validationSchema}
                 onSubmit={async (values) => {

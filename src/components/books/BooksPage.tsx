@@ -1,6 +1,6 @@
 import {Link, Outlet, useLoaderData, useNavigate} from "react-router-dom";
 import {invoke} from "@tauri-apps/api/tauri";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {DecodeHintType, Result} from "@zxing/library";
 import Scanner from "../util/Scanner.tsx";
 
@@ -11,13 +11,17 @@ export type Book = {
     items: number,
 }
 
-export async function loader() {
+type LoaderData = {
+    books: Book[],
+}
+
+export async function loader(): Promise<LoaderData> {
     const fetch = await invoke("fetch_books");
     return {books: fetch as Book[]};
 }
 
 export default function BooksPage() {
-    const {books} = useLoaderData() as { books: Book[] };
+    const {books} = useLoaderData() as LoaderData;
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
 
@@ -29,20 +33,29 @@ export default function BooksPage() {
     const decodeHints = new Map<DecodeHintType, any>();
     decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"]);
 
+    const filtered = useMemo((): Book[] => {
+        const expression = new RegExp(search, "i");
+        return books.filter((book) => {
+            return book.title.search(expression) > -1 || book.author.search(expression) > -1 || book.isbn.search(expression) > -1;
+        })
+    }, [books, search]);
+
     return (
         <div className="flex h-full overflow-auto">
             <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center justify-start">
                 <form className="flex justify-between py-4 w-full px-4">
-                    <input value={search} className="w-4/5" onChange={(event) => setSearch(event.target.value)}/>
+                    <input value={search} className="w-4/5 rounded-lg border"
+                           onChange={(event) => setSearch(event.target.value)}/>
                     <Scanner onDecode={onDecode} hints={decodeHints}/>
                 </form>
-                <Link to="create" className="px-2.5 py-2.5 bg-orange text-black-5 text-center font-medium text-sm rounded-2xl">Adaugă
-                    carte</Link>
-                <div className="flex flex-col items-start w-full overflow-auto h-4/5 scrollbar-thin pl-4 pr-0.5">
-                    {books.map(book => <BookLink {...book} key={book.isbn}/>
-                    )}
+                <Link to="create"
+                      className="px-2.5 py-2.5 bg-orange text-black-5 text-center font-medium text-sm rounded-2xl">
+                    Adaugă carte
+                </Link>
+                <div
+                    className="flex flex-col items-start w-full overflow-auto h-4/5 max-h-fit scrollbar-thin pl-4 pr-0.5">
+                    {filtered.map(book => <BookLink {...book} key={book.isbn}/>)}
                 </div>
-
             </div>
             <Outlet/>
         </div>)
