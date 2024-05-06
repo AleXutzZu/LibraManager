@@ -1,8 +1,9 @@
-import {ActionFunctionArgs, redirect, useLoaderData, useNavigate, useSubmit} from "react-router-dom";
+import {ActionFunctionArgs, redirect, useActionData, useLoaderData, useNavigate, useSubmit} from "react-router-dom";
 import {Client, translator} from "./ClientsPage.tsx";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import Input from "../util/Input.tsx";
+import {invoke} from "@tauri-apps/api/tauri";
 
 type PathParams = {
     clientId: string;
@@ -10,13 +11,30 @@ type PathParams = {
 
 export async function action({request, params}: ActionFunctionArgs<PathParams>) {
     const formData = await request.formData();
-    return redirect(`/clients/${params.clientId}`);
+
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const id = params.clientId as string;
+
+    const client: Client = {id, firstName, lastName, email, phone};
+
+    try {
+        await invoke("update_client", {client});
+        return redirect(`/clients/${params.clientId}`);
+    } catch (error) {
+        return {
+            message: "Numărul de telefon / Adresa de email există deja"
+        }
+    }
 }
 
 export default function ClientEdit() {
     const {client} = useLoaderData() as { client: Client };
     const navigate = useNavigate();
     const submit = useSubmit();
+    const data = useActionData() as { message: string } || undefined;
 
     const validationSchema = Yup.object({
         firstName: Yup.string().matches(/^\w+$/, {message: "Prenumele este invalid"}).required("Prenumele este obligatoriu"),
@@ -32,7 +50,6 @@ export default function ClientEdit() {
             email: client.email,
             phone: client.phone,
         }} validationSchema={validationSchema} onSubmit={async (values) => {
-            console.log(values);
             submit(values, {method: "post"});
         }}>
             {formik => (
@@ -40,7 +57,8 @@ export default function ClientEdit() {
                 <div className="overflow-auto flex-grow flex items-center justify-center">
                     <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5">
                         <div className="py-8 px-4 mx-auto lg:py-16">
-                            <h2 className="mb-4 text-2xl font-bold">Editează client</h2>
+                            {data && data.message && <h2 className="mb-4 text-lg font-bold text-red">{data.message}</h2>}
+                            {!data && <h2 className="mb-4 text-2xl font-bold">Editează client</h2>}
                             <Form>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="w-full">
