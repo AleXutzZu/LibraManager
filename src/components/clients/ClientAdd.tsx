@@ -12,7 +12,7 @@ type ClientResponse = {
 
 export async function action({request}: { request: Request }): Promise<ClientResponse> {
     const formData = await request.formData();
-    const id = translator.generate() as string;
+    const id = translator.uuid() as string;
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
     const email = formData.get("email") as string;

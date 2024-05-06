@@ -6,19 +6,35 @@ type PathParams = {
     clientId: string;
 }
 
-export async function loader({params}: LoaderFunctionArgs<PathParams>) {
-    const client = await invoke("fetch_client", {id: params.clientId});
-    if (client === null) throw new Response("", {status: 404, statusText: "Not Found"});
-    return {client: client as Client};
+type LoaderData = {
+    client: Client,
+    borrowedBooks: BorrowData[],
 }
 
-export async function action({params}: ActionFunctionArgs<PathParams>) {
+type BorrowData = {
+    startDate: string,
+    endDate: string,
+    title: string,
+    author: string,
+    id: number,
+    isbn: string
+}
+
+export async function loader({params}: LoaderFunctionArgs<PathParams>): Promise<LoaderData> {
+    const client = await invoke("fetch_client", {id: params.clientId});
+    if (client === null) throw new Response("", {status: 404, statusText: "Not Found"});
+    const books: BorrowData[] = await invoke("fetch_borrowed_books", {id: params.clientId});
+
+    return {client: client as Client, borrowedBooks: books};
+}
+
+export async function deleteAction({params}: ActionFunctionArgs<PathParams>) {
     await invoke("delete_client", {id: params.clientId});
     return redirect("/clients");
 }
 
 export default function ClientInfo() {
-    const {client} = useLoaderData() as { client: Client };
+    const {client, borrowedBooks: books} = useLoaderData() as LoaderData;
     return (
         <div className="overflow-auto flex-grow flex items-center justify-center">
             <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5">
@@ -60,8 +76,16 @@ export default function ClientInfo() {
                             </button>
                         </Form>
                     </div>
-                    <h2 className="mb-4 text-2xl font-bold mt-3">Împrumuturi</h2>
-                    <button className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">Emite legitimație</button>
+                    <details>
+                        <summary className="mb-4 text-xl font-bold mt-3">Împrumuturi</summary>
+                        <div className="grid grid-cols-2 gap-4">
+
+                        </div>
+                    </details>
+                    <button
+                        className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
+                        Emite legitimație
+                    </button>
                 </div>
             </div>
         </div>
