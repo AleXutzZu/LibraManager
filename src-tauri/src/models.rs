@@ -42,4 +42,50 @@ pub mod database {
         pub email: String,
         pub phone: String,
     }
+
+    #[derive(Queryable, Selectable, Associations, Serialize, Identifiable)]
+    #[diesel(belongs_to(Book, foreign_key = bookISBN))]
+    #[diesel(belongs_to(Client, foreign_key = clientID))]
+    #[serde(rename_all = "camelCase")]
+    #[diesel(table_name = crate::schema::borrows)]
+    #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+    pub struct Borrow {
+        pub id: i32,
+        #[diesel(column_name = clientID)]
+        pub client_id: String,
+        #[diesel(column_name = bookISBN)]
+        pub book_isbn: String,
+        #[diesel(column_name = startDate)]
+        pub start_date: String,
+        #[diesel(column_name = endDate)]
+        pub end_date: String,
+        pub returned: bool,
+    }
+
+    #[derive(Insertable, Deserialize)]
+    #[diesel(table_name = crate::schema::borrows)]
+    pub struct NewBorrow<'a> {
+        #[diesel(column_name = clientID)]
+        pub client_id: &'a str,
+        #[diesel(column_name = bookISBN)]
+        pub book_isbn: &'a str,
+        #[diesel(column_name = startDate)]
+        pub start_date: &'a str,
+        #[diesel(column_name = endDate)]
+        pub end_date: &'a str,
+        pub returned: bool,
+    }
+
+    pub mod joined_data {
+        use serde::Serialize;
+        use crate::models::database::{Book, Borrow};
+
+        #[derive(Serialize)]
+        pub struct BookBorrow {
+            #[serde(flatten)]
+            pub book: Book,
+            #[serde(flatten)]
+            pub borrow: Borrow,
+        }
+    }
 }

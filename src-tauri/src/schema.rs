@@ -10,6 +10,17 @@ diesel::table! {
 }
 
 diesel::table! {
+    borrows (id) {
+        id -> Integer,
+        clientID -> Text,
+        bookISBN -> Text,
+        startDate -> Text,
+        endDate -> Text,
+        returned -> Bool,
+    }
+}
+
+diesel::table! {
     clients (id) {
         id -> Text,
         firstName -> Text,
@@ -29,8 +40,12 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(borrows -> books (bookISBN));
+diesel::joinable!(borrows -> clients (clientID));
+
 diesel::allow_tables_to_appear_in_same_query!(
     books,
+    borrows,
     clients,
     users,
 );
