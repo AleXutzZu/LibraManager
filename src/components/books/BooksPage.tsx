@@ -49,7 +49,7 @@ export default function BooksPage() {
                     <Scanner onDecode={onDecode} hints={decodeHints}/>
                 </form>
                 <Link to="create"
-                      className="px-2.5 py-2.5 bg-orange text-black-5 text-center font-medium text-sm rounded-2xl">
+                      className="px-2 py-2 bg-orange text-black-5 text-center font-medium text-lg rounded-2xl">
                     Adaugă carte
                 </Link>
                 {filtered.length === 0 && <p className="font-medium mt-3">Nu există cărți</p>}
