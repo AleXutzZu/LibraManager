@@ -18,7 +18,7 @@ pub mod database {
         pub password: String,
     }
 
-    #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize, Identifiable)]
+    #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize, Identifiable, AsChangeset)]
     #[diesel(table_name = crate::schema::books)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     #[diesel(primary_key(isbn))]
@@ -29,7 +29,7 @@ pub mod database {
         pub items: i32,
     }
 
-    #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize, Identifiable)]
+    #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize, Identifiable, AsChangeset)]
     #[diesel(table_name = crate::schema::clients)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     #[serde(rename_all = "camelCase")]
