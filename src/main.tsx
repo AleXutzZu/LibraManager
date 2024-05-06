@@ -16,6 +16,7 @@ import ClientInfo, {
     action as deleteClientAction
 } from "./components/clients/ClientInfo.tsx";
 import ClientEdit, {action as clientEditAction} from "./components/clients/ClientEdit.tsx";
+import ClientErrorPage from "./components/clients/ClientErrorPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -78,7 +79,7 @@ const router = createBrowserRouter([
                         path: ":clientId",
                         element: <ClientInfo/>,
                         loader: clientInfoLoader,
-                        errorElement: <>Woo not found client</>,
+                        errorElement: <ClientErrorPage/>,
                         children: [
                             {
                                 path: "delete",
@@ -90,7 +91,8 @@ const router = createBrowserRouter([
                         path: ":clientId/edit",
                         loader: clientInfoLoader,
                         action: clientEditAction,
-                        element: <ClientEdit/>
+                        element: <ClientEdit/>,
+                        errorElement: <ClientErrorPage/>
                     }
                 ]
             }
