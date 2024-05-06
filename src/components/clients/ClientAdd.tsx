@@ -12,7 +12,7 @@ type ClientResponse = {
 
 export async function action({request}: { request: Request }): Promise<ClientResponse> {
     const formData = await request.formData();
-    const id = translator.toUUID(formData.get("id") as string);
+    const id = translator.generate() as string;
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
     const email = formData.get("email") as string;
@@ -36,7 +36,6 @@ export async function action({request}: { request: Request }): Promise<ClientRes
 
 export default function ClientAdd() {
     const validationSchema = Yup.object({
-        id: Yup.string(),
         firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^\w+$/, {message: "Prenumele este invalid"}),
         lastName: Yup.string().required("Numele este obligatoriu").matches(/^\w+$/, {message: "Numele este invalid"}),
         email: Yup.string().matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {message: "Email-ul este invalid"}).required("Email-ul este obligatoriu"),
@@ -50,7 +49,6 @@ export default function ClientAdd() {
     return (
         <Formik initialValues={
             {
-                id: translator.generate(),
                 firstName: "",
                 lastName: "",
                 phone: "",
@@ -85,15 +83,10 @@ export default function ClientAdd() {
                                                className="border text-sm rounded-lg block w-full p-2.5"
                                                placeholder="Tastează adresa de email"/>
                                     </div>
-                                    <div className="w-full">
-                                        <Input label="ID Utilizator" type="text" name="id"
-                                               className="border text-sm rounded-lg block w-full p-2.5"
-                                               placeholder="ID" disabled/>
-                                    </div>
-                                    <div className="w-full">
+                                    <div className="col-span-2">
                                         <Input label="Telefon" type="text" name="phone"
                                                className="border text-sm rounded-lg block w-full p-2.5"
-                                               placeholder="Numărul de telefon"/>
+                                               placeholder="Tastează numărul de telefon"/>
                                     </div>
                                 </div>
                                 <button type="submit" disabled={formik.isSubmitting}
