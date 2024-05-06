@@ -1,7 +1,7 @@
 import {Link, Outlet, useLoaderData, useNavigate} from "react-router-dom";
 import {invoke} from "@tauri-apps/api/tauri";
 import {useMemo, useState} from "react";
-import {DecodeHintType, Result} from "@zxing/library";
+import {BarcodeFormat, DecodeHintType, Result} from "@zxing/library";
 import Scanner from "../util/Scanner.tsx";
 
 export type Book = {
@@ -31,7 +31,7 @@ export default function BooksPage() {
     }
 
     const decodeHints = new Map<DecodeHintType, any>();
-    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"]);
+    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
 
     const filtered = useMemo((): Book[] => {
         const expression = new RegExp(search, "i");

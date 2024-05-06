@@ -2,7 +2,7 @@ import short from "short-uuid";
 import Scanner from "../util/Scanner.tsx";
 import {Link, Outlet, useLoaderData, useNavigate} from "react-router-dom";
 import {useMemo, useState} from "react";
-import {DecodeHintType, Result} from "@zxing/library";
+import {DecodeHintType, Result,BarcodeFormat} from "@zxing/library";
 import {invoke} from "@tauri-apps/api/tauri";
 
 export const translator = short(short.constants.cookieBase90);
@@ -36,7 +36,7 @@ export default function ClientsPage() {
     }
 
     const decodeHints = new Map<DecodeHintType, any>();
-    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["Code 128"]);
+    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.CODE_128]);
 
     const filtered = useMemo((): Client[] => {
         const expression = new RegExp(search, "i");
