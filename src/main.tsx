@@ -20,6 +20,7 @@ import ClientEdit, {action as clientEditAction} from "./components/clients/Clien
 import ClientErrorPage from "./components/clients/ClientErrorPage.tsx";
 import GlobalErrorPage from "./components/index/GlobalErrorPage.tsx";
 import ClientsIndex from "./components/clients/ClientsIndex.tsx";
+import BooksIndex from "./components/books/BooksIndex.tsx";
 
 const router = createBrowserRouter([
     {
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         index: true,
-                        element: <>Index for books</>
+                        element: <BooksIndex/>
                     },
                     {
                         path: "create",
