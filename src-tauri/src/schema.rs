@@ -14,8 +14,8 @@ diesel::table! {
         id -> Integer,
         clientID -> Text,
         bookISBN -> Text,
-        startDate -> Text,
-        endDate -> Text,
+        startDate -> Date,
+        endDate -> Date,
         returned -> Bool,
     }
 }

@@ -56,13 +56,14 @@ pub mod database {
         #[diesel(column_name = bookISBN)]
         pub book_isbn: String,
         #[diesel(column_name = startDate)]
-        pub start_date: String,
+        pub start_date: chrono::NaiveDate,
         #[diesel(column_name = endDate)]
-        pub end_date: String,
+        pub end_date: chrono::NaiveDate,
         pub returned: bool,
     }
 
     #[derive(Insertable, Deserialize)]
+    #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     #[diesel(table_name = crate::schema::borrows)]
     pub struct NewBorrow<'a> {
         #[diesel(column_name = clientID)]
@@ -70,21 +71,25 @@ pub mod database {
         #[diesel(column_name = bookISBN)]
         pub book_isbn: &'a str,
         #[diesel(column_name = startDate)]
-        pub start_date: &'a str,
+        pub start_date: chrono::NaiveDate,
         #[diesel(column_name = endDate)]
-        pub end_date: &'a str,
+        pub end_date: chrono::NaiveDate,
         pub returned: bool,
     }
 
     pub mod joined_data {
         use serde::Serialize;
-        use crate::models::database::{Book, Borrow};
+        use crate::models::database::{Book, Borrow, Client};
 
         #[derive(Serialize)]
         pub struct BookBorrow {
-            #[serde(flatten)]
             pub book: Book,
-            #[serde(flatten)]
+            pub borrow: Borrow,
+        }
+
+        #[derive(Serialize)]
+        pub struct ClientBorrow {
+            pub client: Client,
             pub borrow: Borrow,
         }
     }

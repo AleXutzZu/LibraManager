@@ -6,4 +6,8 @@
     .scrollbar-thin {
         scrollbar-width: thin;
     }
+
+    .display-none {
+        display: none;
+    }
 }

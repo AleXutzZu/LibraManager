@@ -13,7 +13,8 @@ import ClientsPage, {loader as clientsLoader} from "./components/clients/Clients
 import ClientAdd, {action as clientAddAction} from "./components/clients/ClientAdd.tsx";
 import ClientInfo, {
     loader as clientInfoLoader,
-    action as deleteClientAction
+    deleteAction as deleteClientAction,
+    action as clientAction
 } from "./components/clients/ClientInfo.tsx";
 import ClientEdit, {action as clientEditAction} from "./components/clients/ClientEdit.tsx";
 import ClientErrorPage from "./components/clients/ClientErrorPage.tsx";
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
                         path: ":clientId",
                         element: <ClientInfo/>,
                         loader: clientInfoLoader,
+                        action: clientAction,
                         errorElement: <ClientErrorPage/>,
                         children: [
                             {
