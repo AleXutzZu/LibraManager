@@ -19,6 +19,7 @@ import ClientInfo, {
 import ClientEdit, {action as clientEditAction} from "./components/clients/ClientEdit.tsx";
 import ClientErrorPage from "./components/clients/ClientErrorPage.tsx";
 import GlobalErrorPage from "./components/index/GlobalErrorPage.tsx";
+import ClientsIndex from "./components/clients/ClientsIndex.tsx";
 
 const router = createBrowserRouter([
     {
@@ -70,7 +71,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         index: true,
-                        element: <>Index for clients</>
+                        element: <ClientsIndex/>
                     },
                     {
                         path: "create",
