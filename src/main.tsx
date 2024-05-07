@@ -62,6 +62,18 @@ const router = createBrowserRouter([
                         element: <BookInfo/>,
                         loader: bookInfoLoader,
                         errorElement: <>Woo not found</>,
+                        children: [
+                            {
+                                path: "delete",
+
+                            }
+                        ]
+                    },
+                    {
+                        path: ":isbn/edit",
+                        element: <></>,
+                        loader: bookInfoLoader,
+                        errorElement: <></>
                     }
                 ]
             },
