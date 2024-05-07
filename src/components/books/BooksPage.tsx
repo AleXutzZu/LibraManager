@@ -1,8 +1,9 @@
-import {Link, Outlet, useLoaderData, useNavigate} from "react-router-dom";
+import {Link, Outlet, redirect, useLoaderData, useNavigate} from "react-router-dom";
 import {invoke} from "@tauri-apps/api/tauri";
 import {useMemo, useState} from "react";
 import {BarcodeFormat, DecodeHintType, Result} from "@zxing/library";
 import Scanner from "../util/Scanner.tsx";
+import {authProvider} from "../../auth/auth.ts";
 
 export type Book = {
     isbn: string,
@@ -15,7 +16,8 @@ type LoaderData = {
     books: Book[],
 }
 
-export async function loader(): Promise<LoaderData> {
+export async function loader(): Promise<LoaderData | Response> {
+    if (!authProvider.isAuthenticated) return redirect("/login");
     const fetch = await invoke("fetch_books");
     return {books: fetch as Book[]};
 }
