@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import {useActionData, useSubmit} from "react-router-dom";
 import Scanner from "../util/Scanner.tsx";
-import {DecodeHintType} from "@zxing/library";
+import {BarcodeFormat, DecodeHintType} from "@zxing/library";
 import Input from "../util/Input.tsx";
 
 type BookResponse = {
@@ -47,7 +47,7 @@ export default function BookAdd() {
     const data = useActionData() as BookResponse | undefined;
 
     const decodeHints = new Map<DecodeHintType, any>();
-    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, ["EAN-13"]);
+    decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
 
     return (
         <Formik initialValues={{title: "", author: "", isbn: "", items: 1}} validationSchema={validationSchema}
