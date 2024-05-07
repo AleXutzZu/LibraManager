@@ -38,10 +38,22 @@ const router = createBrowserRouter([
                 loader: homePageLoader,
             },
             {
+                path: "settings",
+                element: <>Settings</>
+            },
+            {
+                path: "admin",
+                element: <>Admin settings</>
+            },
+            {
                 path: "login",
                 element: <LoginPage/>,
                 loader: loginLoader,
                 action: loginAction,
+            },
+            {
+                path: "lookup",
+                element: <>Lookup page</>
             },
             {
                 path: "books",
