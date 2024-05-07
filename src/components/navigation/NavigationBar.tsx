@@ -31,7 +31,7 @@ function AuthStatus() {
 
     return (
         <div className="group flex flex-col items-center justify-center min-w-36">
-            <p className="text-xl lg:text-2xl"> Buna, <span className="font-bold">{user.firstName}</span></p>
+            <p className="text-xl lg:text-2xl"> Bună, <span className="font-bold">{user.firstName}</span></p>
             <div
                 className="absolute invisible group-hover:visible transition-all
                 duration-100 ease-in-out bg-black-50 min-w-32 min-h-24 lg:min-w-36 top-10 flex flex-col items-center
