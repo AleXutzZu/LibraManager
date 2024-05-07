@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Root from "./Root.tsx";
 import "./styles.css";
-import {createBrowserRouter, NavLink, redirect, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, redirect, RouterProvider} from "react-router-dom";
 import {authProvider} from "./auth/auth.ts";
 import HomePage, {loader as homePageLoader} from "./components/index/HomePage.tsx";
 import LoginPage, {action as loginAction, loader as loginLoader} from "./components/login/LoginPage.tsx";
@@ -12,12 +12,13 @@ import BookAdd, {action as bookAddAction} from "./components/books/BookAdd.tsx";
 import ClientsPage, {loader as clientsLoader} from "./components/clients/ClientsPage.tsx";
 import ClientAdd, {action as clientAddAction} from "./components/clients/ClientAdd.tsx";
 import ClientInfo, {
-    loader as clientInfoLoader,
+    action as clientAction,
     deleteAction as deleteClientAction,
-    action as clientAction
+    loader as clientInfoLoader
 } from "./components/clients/ClientInfo.tsx";
 import ClientEdit, {action as clientEditAction} from "./components/clients/ClientEdit.tsx";
 import ClientErrorPage from "./components/clients/ClientErrorPage.tsx";
+import GlobalErrorPage from "./components/index/GlobalErrorPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -27,7 +28,7 @@ const router = createBrowserRouter([
         loader() {
             return {user: authProvider.user};
         },
-        errorElement: <NavLink to={"/"}>Back home</NavLink>,
+        errorElement: <GlobalErrorPage/>,
         children: [
             {
                 index: true,
