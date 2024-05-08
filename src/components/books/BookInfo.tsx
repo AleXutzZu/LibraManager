@@ -1,15 +1,34 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {Book} from "./BooksPage.tsx";
 import {ActionFunctionArgs, Form, Link, LoaderFunctionArgs, redirect, useLoaderData} from "react-router-dom";
+import {Borrow} from "../clients/ClientInfo.tsx";
+import {Client} from "../clients/ClientsPage.tsx";
+import {compareAsc} from "date-fns";
 
 type PathParams = {
     isbn: string,
 }
 
-export async function loader({params}: LoaderFunctionArgs<PathParams>) {
+type ClientBorrow = {
+    borrow: Borrow,
+    client: Client
+}
+
+type LoaderData = {
+    book: Book,
+    clients: ClientBorrow[],
+    history: ClientBorrow[]
+}
+
+export async function loader({params}: LoaderFunctionArgs<PathParams>): Promise<LoaderData> {
     const book = await invoke("fetch_book", {isbn: params.isbn});
     if (book === null) throw new Response("", {status: 404, statusText: "Not Found"});
-    return {book: book as Book};
+    const clients: ClientBorrow[] = await invoke("fetch_borrowed_books", {isbn: params.isbn});
+    return {
+        book: book as Book,
+        clients: clients.filter(data => !data.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate)),
+        history: clients.filter(data => data.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate)),
+    };
 }
 
 export async function deleteAction({params}: ActionFunctionArgs<PathParams>) {
@@ -18,7 +37,7 @@ export async function deleteAction({params}: ActionFunctionArgs<PathParams>) {
 }
 
 export default function BookInfo() {
-    const {book} = useLoaderData() as { book: Book };
+    const {book, clients, history} = useLoaderData() as LoaderData;
     return (
         <div className="overflow-auto flex-grow flex p-5">
             <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5 m-auto">
