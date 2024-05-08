@@ -7,7 +7,7 @@ import {authProvider} from "./auth/auth.ts";
 import HomePage, {loader as homePageLoader} from "./components/index/HomePage.tsx";
 import LoginPage, {action as loginAction, loader as loginLoader} from "./components/login/LoginPage.tsx";
 import BooksPage, {loader as booksLoader} from "./components/books/BooksPage.tsx";
-import BookInfo, {loader as bookInfoLoader} from "./components/books/BookInfo.tsx";
+import BookInfo, {loader as bookInfoLoader, deleteAction as deleteBookAction} from "./components/books/BookInfo.tsx";
 import BookAdd, {action as bookAddAction} from "./components/books/BookAdd.tsx";
 import ClientsPage, {loader as clientsLoader} from "./components/clients/ClientsPage.tsx";
 import ClientAdd, {action as clientAddAction} from "./components/clients/ClientAdd.tsx";
@@ -21,6 +21,8 @@ import ClientErrorPage from "./components/clients/ClientErrorPage.tsx";
 import GlobalErrorPage from "./components/index/GlobalErrorPage.tsx";
 import ClientsIndex from "./components/clients/ClientsIndex.tsx";
 import BooksIndex from "./components/books/BooksIndex.tsx";
+import BookErrorPage from "./components/books/BookErrorPage.tsx";
+import BookEdit from "./components/books/BookEdit.tsx";
 
 const router = createBrowserRouter([
     {
@@ -73,19 +75,19 @@ const router = createBrowserRouter([
                         path: ":isbn",
                         element: <BookInfo/>,
                         loader: bookInfoLoader,
-                        errorElement: <>Woo not found</>,
+                        errorElement: <BookErrorPage/>,
                         children: [
                             {
                                 path: "delete",
-
+                                action: deleteBookAction
                             }
                         ]
                     },
                     {
                         path: ":isbn/edit",
-                        element: <></>,
+                        element: <BookEdit/>,
                         loader: bookInfoLoader,
-                        errorElement: <></>
+                        errorElement: <BookErrorPage/>
                     }
                 ]
             },
