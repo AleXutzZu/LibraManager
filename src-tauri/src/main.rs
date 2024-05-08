@@ -76,6 +76,15 @@ fn delete_book(database: State<DatabaseConnection>, isbn: String) -> SerializedR
 }
 
 #[tauri::command]
+fn update_book(database: State<DatabaseConnection>, book: Book) -> SerializedResult<()> {
+    use diesel::{RunQueryDsl};
+    let client = &mut *database.client.lock().unwrap();
+
+    diesel::update(&book).set(&book).execute(client)?;
+    Ok(())
+}
+
+#[tauri::command]
 fn fetch_clients(database: State<DatabaseConnection>) -> SerializedResult<Vec<Client>> {
     use libra_manager::schema::clients::dsl::*;
     use diesel::{QueryDsl, SelectableHelper, RunQueryDsl};
@@ -225,6 +234,7 @@ fn main() {
             fetch_book,
             create_book,
             delete_book,
+            update_book,
             fetch_clients,
             fetch_client,
             create_client,

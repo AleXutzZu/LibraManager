@@ -22,7 +22,7 @@ import GlobalErrorPage from "./components/index/GlobalErrorPage.tsx";
 import ClientsIndex from "./components/clients/ClientsIndex.tsx";
 import BooksIndex from "./components/books/BooksIndex.tsx";
 import BookErrorPage from "./components/books/BookErrorPage.tsx";
-import BookEdit from "./components/books/BookEdit.tsx";
+import BookEdit, {action as bookEditAction} from "./components/books/BookEdit.tsx";
 
 const router = createBrowserRouter([
     {
@@ -87,6 +87,7 @@ const router = createBrowserRouter([
                         path: ":isbn/edit",
                         element: <BookEdit/>,
                         loader: bookInfoLoader,
+                        action: bookEditAction,
                         errorElement: <BookErrorPage/>
                     }
                 ]
