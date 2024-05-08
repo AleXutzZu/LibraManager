@@ -9,7 +9,7 @@ use tauri::{Manager, State};
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
 use libra_manager::models::database::{Book, Borrow, Client, NewBorrow, User};
-use libra_manager::models::database::joined_data::BookBorrow;
+use libra_manager::models::database::joined_data::{BookBorrow, ClientBorrow};
 use libra_manager::SerializedResult;
 use libra_manager::settings::SettingsLoader;
 
@@ -138,6 +138,25 @@ fn update_client(database: State<DatabaseConnection>, client: Client) -> Seriali
 }
 
 #[tauri::command]
+fn fetch_borrowers(database: State<DatabaseConnection>, isbn: String) -> SerializedResult<Vec<ClientBorrow>> {
+    use libra_manager::schema::clients::dsl::clients;
+    use libra_manager::schema::books::dsl::books;
+    use diesel::{RunQueryDsl, SelectableHelper, QueryDsl, BelongingToDsl};
+    use diesel::associations::{HasTable};
+
+    let client = &mut *database.client.lock().unwrap();
+
+    let book: Book = books.find(isbn).get_result(client).unwrap();
+    let result = Borrow::belonging_to(&book)
+        .inner_join(clients::table())
+        .select((Borrow::as_select(), Client::as_select()))
+        .load::<(Borrow,Client)>(client)?;
+
+    let collected = result.into_iter().map(|(borrow, client)| ClientBorrow{borrow, client}).collect::<Vec<ClientBorrow>>();
+    Ok(collected)
+}
+
+#[tauri::command]
 fn fetch_borrowed_books(database: State<DatabaseConnection>, id: String) -> SerializedResult<Vec<BookBorrow>> {
     use libra_manager::schema::clients::dsl::clients;
     use libra_manager::schema::books::dsl::books;
@@ -235,6 +254,7 @@ fn main() {
             create_book,
             delete_book,
             update_book,
+            fetch_borrowers,
             fetch_clients,
             fetch_client,
             create_client,
