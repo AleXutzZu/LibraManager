@@ -74,7 +74,7 @@ export default function BookAdd() {
                                 </div>
                                 <div className="w-full">
                                     <Input label="ISBN" type="text" name="isbn"
-                                           className="border text-sm rounded-lg block w-4/5 p-2.5"
+                                           className="border text-sm rounded-lg block w-full p-2.5"
                                            placeholder="ISBN">
 
                                         <Scanner hints={decodeHints} onDecode={(result) => {

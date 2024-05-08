@@ -46,7 +46,7 @@ export default function BooksPage() {
         <div className="flex h-full overflow-auto">
             <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center justify-start">
                 <form className="flex justify-between py-4 w-full px-4">
-                    <input value={search} className="w-4/5 rounded-lg border p-0.5" placeholder={"Caută..."}
+                    <input value={search} className="mr-3 w-full rounded-lg border p-0.5" placeholder={"Caută..."}
                            onChange={(event) => setSearch(event.target.value)}/>
                     <Scanner onDecode={onDecode} hints={decodeHints}/>
                 </form>
