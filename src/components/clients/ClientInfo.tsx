@@ -146,23 +146,22 @@ export default function ClientInfo() {
                                         return {};
                                     }}>
                                 {formik => (
-                                    <FormikForm className="flex flex-col items-start w-full space-y-2.5">
+                                    <FormikForm className="flex items-center w-full">
                                         <div className="w-full">
                                             <Input label="ISBN" type="text" name="isbn"
-                                                   className="border text-sm rounded-lg block w-5/6 p-2.5"
+                                                   className="border text-sm rounded-lg block p-2.5 flex-grow"
                                                    placeholder="ISBN">
 
                                                 <Scanner hints={decodeHints} onDecode={(result) => {
                                                     formik.setFieldValue("isbn", result.getText(), true);
                                                 }}/>
+                                                <button type="submit" disabled={formik.isSubmitting}
+                                                        className="!ml-4 px-2.5 py-2.5 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
+                                                    Adaugă
+                                                </button>
                                             </Input>
                                         </div>
-                                        <div className="">
-                                            <button type="submit" disabled={formik.isSubmitting}
-                                                    className="px-2.5 py-2.5 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
-                                                Adaugă împrumut
-                                            </button>
-                                        </div>
+
                                     </FormikForm>
                                 )}
                             </Formik>
