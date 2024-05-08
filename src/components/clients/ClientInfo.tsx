@@ -14,11 +14,11 @@ type PathParams = {
 
 type LoaderData = {
     client: Client,
-    borrowedBooks: BorrowedBook[],
-    history: BorrowedBook[],
+    borrowedBooks: BookBorrow[],
+    history: BookBorrow[],
 }
 
-type BorrowedBook = {
+type BookBorrow = {
     book: Book,
     borrow: Borrow,
 }
@@ -35,7 +35,7 @@ export type Borrow = {
 export async function loader({params}: LoaderFunctionArgs<PathParams>): Promise<LoaderData> {
     const client = await invoke("fetch_client", {id: params.clientId});
     if (client === null) throw new Response("", {status: 404, statusText: "Not Found"});
-    const books: BorrowedBook[] = await invoke("fetch_borrowed_books", {id: params.clientId});
+    const books: BookBorrow[] = await invoke("fetch_borrowed_books", {id: params.clientId});
 
     return {
         client: client as Client,
@@ -192,7 +192,7 @@ export default function ClientInfo() {
     )
 }
 
-function BorrowCard(props: BorrowedBook) {
+function BorrowCard(props: BookBorrow) {
     const late: boolean = compareAsc(new Date(), new Date(props.borrow.endDate)) >= 0;
 
     return (
@@ -234,7 +234,7 @@ function BorrowCard(props: BorrowedBook) {
     )
 }
 
-function HistoryCard(props: BorrowedBook) {
+function HistoryCard(props: BookBorrow) {
     return (
         <div className="grid grid-cols-2 gap-4 mt-3 border p-2 rounded-lg">
             <div className="w-full">
