@@ -23,7 +23,7 @@ type LoaderData = {
 export async function loader({params}: LoaderFunctionArgs<PathParams>): Promise<LoaderData> {
     const book = await invoke("fetch_book", {isbn: params.isbn});
     if (book === null) throw new Response("", {status: 404, statusText: "Not Found"});
-    const clients: ClientBorrow[] = await invoke("fetch_borrowed_books", {isbn: params.isbn});
+    const clients: ClientBorrow[] = await invoke("fetch_borrowers", {isbn: params.isbn});
     return {
         book: book as Book,
         clients: clients.filter(data => !data.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate)),
@@ -75,7 +75,66 @@ export default function BookInfo() {
                             </button>
                         </Form>
                     </div>
+                    <details className="mb-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
+                        <summary className="text-xl font-bold">Împrumuturi</summary>
+                        <div className="w-full mt-10">
+                            {clients.length === 0 &&
+                                <h1 className="font-bold text-center mx-auto text-xl">Nu există împrumuturi</h1>}
+                            {clients.map(borrowerClient => (
+                                <BorrowCard {...borrowerClient} key={borrowerClient.borrow.id}/>))}
+                        </div>
+                    </details>
+                    <details className="mb-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
+                        <summary className="text-xl font-bold">Istoric</summary>
+                        <div className="w-full mt-10">
+                            {history.length === 0 &&
+                                <h1 className="font-bold text-center mx-auto text-xl">Nu există istoric</h1>}
+                            {history.map(borrowerClient => (
+                                <HistoryCard {...borrowerClient} key={borrowerClient.borrow.id}/>))}
+                        </div>
+                    </details>
                 </div>
+            </div>
+        </div>
+    )
+}
+
+function BorrowCard(props: ClientBorrow) {
+    const late: boolean = compareAsc(new Date(), new Date(props.borrow.endDate)) >= 0;
+
+    return (
+        <div className="grid grid-cols-2 gap-4 mt-3 border p-2 rounded-lg">
+            <Link className="col-span-2" to={`/clients/${props.client.id}`}>
+                <h3 className="block mb-2 text-lg font-medium">Nume complet</h3>
+                <h3 className="text-lg block w-full">{props.client.firstName} {props.client.lastName}</h3>
+            </Link>
+            <div className="w-full">
+                <h3 className="block mb-2 text-lg font-medium">Împrumutat pe</h3>
+                <h3 className="text-lg block w-full">{props.borrow.startDate}</h3>
+            </div>
+            <div className="w-full">
+                <h3 className="block mb-2 text-lg font-medium">Dată retur</h3>
+                <h3 className="text-lg block w-full">{props.borrow.endDate} {late &&
+                    <span className="text-red font-medium">(Întârziat)</span>}</h3>
+            </div>
+        </div>
+    )
+}
+
+function HistoryCard(props: ClientBorrow) {
+    return (
+        <div className="grid grid-cols-2 gap-4 mt-3 border p-2 rounded-lg">
+            <Link className="col-span-2" to={`/clients/${props.client.id}`}>
+                <h3 className="block mb-2 text-lg font-medium">Nume complet</h3>
+                <h3 className="text-lg block w-full">{props.client.firstName} {props.client.lastName}</h3>
+            </Link>
+            <div className="w-full">
+                <h3 className="block mb-2 text-lg font-medium">Împrumutat pe</h3>
+                <h3 className="text-lg block w-full">{props.borrow.startDate}</h3>
+            </div>
+            <div className="w-full">
+                <h3 className="block mb-2 text-lg font-medium">Returnat pe</h3>
+                <h3 className="text-lg block w-full">{props.borrow.endDate}</h3>
             </div>
         </div>
     )
