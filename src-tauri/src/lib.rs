@@ -61,12 +61,12 @@ pub mod settings {
     #[serde(rename_all = "camelCase")]
     pub struct Settings {
         pub library_name: String,
-        pub camera_device_id: Option<String>,
+        pub camera_device_id: String,
     }
 
     impl Default for Settings {
         fn default() -> Self {
-            Self { library_name: "Librarie".to_string(), camera_device_id: None }
+            Self { library_name: "Librarie".to_string(), camera_device_id: "".to_string() }
         }
     }
 

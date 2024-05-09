@@ -2,7 +2,7 @@ import {invoke} from "@tauri-apps/api/tauri";
 
 export type Settings = {
     libraryName: string,
-    cameraDeviceId: string | null,
+    cameraDeviceId: string,
 }
 
 class SettingsProvider {
