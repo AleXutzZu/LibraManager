@@ -38,7 +38,7 @@ function AuthStatus() {
                 justify-evenly rounded-2xl border-b-black-100 border-2 lg:top-12 px-0.5 py-1.5"
             >
                 <div>
-                    <p className="text-lg lg:text-xl">Setari</p>
+                    <NavLink className="text-lg lg:text-xl" to="/settings">Setări</NavLink>
                 </div>
 
                 {user.role === "admin" ?
