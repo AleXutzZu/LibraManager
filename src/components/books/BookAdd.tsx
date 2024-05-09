@@ -38,8 +38,8 @@ export async function action({request}: { request: Request }): Promise<BookRespo
 export default function BookAdd() {
     const validationSchema = Yup.object({
         isbn: Yup.string().required("ISBN-ul este obligatoriu").matches(/^[0-9]{13}$/, {message: "ISBN-ul nu este valid"}),
-        title: Yup.string().required("Titlul este obligatoriu"),
-        author: Yup.string().required("Autorul este obligatoriu"),
+        title: Yup.string().required("Titlul este obligatoriu").matches(/^\w+$/, {message: "Titlul este invalid"}),
+        author: Yup.string().required("Autorul este obligatoriu").matches(/^\w+$/, {message: "Autorul este invalid"}),
         items: Yup.number().required("Exemplarele sunt obligatorii"),
     })
 
