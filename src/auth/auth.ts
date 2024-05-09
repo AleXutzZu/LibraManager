@@ -7,25 +7,34 @@ export interface User {
     role: "admin" | "user",
 }
 
-interface AuthProvider {
-    isAuthenticated: boolean,
-    user?: User,
-    login: (username: string, password: string) => Promise<void>,
-    logout: () => Promise<void>,
-}
+class AuthProvider {
+    private user: User | null;
+    private authenticated: boolean;
 
-export const authProvider: AuthProvider = {
-    isAuthenticated: false,
+    public constructor() {
+        this.authenticated = false;
+        this.user = null;
+    }
 
-    user: undefined,
+    public isAuthenticated(): boolean {
+        return this.authenticated;
+    }
 
-    async login(username: string, password: string) {
+    public async login(username: string, password: string): Promise<void> {
         this.user = await invoke("login", {username, password});
-        this.isAuthenticated = true;
-    },
+        this.authenticated = true;
+    }
 
-    async logout() {
-        authProvider.isAuthenticated = false;
-        authProvider.user = undefined;
+    public async logout(): Promise<void> {
+        this.authenticated = false;
+        this.user = null;
+    }
+
+    public async getCurrentUser(): Promise<User | null> {
+        if (!this.user) return null;
+        this.user = await invoke("fetch_user", {username: this.user.username});
+        return this.user;
     }
 }
+
+export const authProvider = new AuthProvider();

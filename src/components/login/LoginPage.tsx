@@ -5,7 +5,7 @@ import {Form, Formik} from "formik";
 import Input from "../util/Input.tsx";
 
 export async function loader() {
-    if (authProvider.isAuthenticated) return redirect("/");
+    if (authProvider.isAuthenticated()) return redirect("/");
     return null;
 }
 

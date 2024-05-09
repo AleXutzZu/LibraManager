@@ -23,14 +23,18 @@ import ClientsIndex from "./components/clients/ClientsIndex.tsx";
 import BooksIndex from "./components/books/BooksIndex.tsx";
 import BookErrorPage from "./components/books/BookErrorPage.tsx";
 import BookEdit, {action as bookEditAction} from "./components/books/BookEdit.tsx";
+import AccountSettings, {
+    loader as accountSettingsLoader,
+    action as accountSettingsAction
+} from "./components/settings/AccountSettings.tsx";
 
 const router = createBrowserRouter([
     {
         id: "root",
         path: "/",
         element: <Root/>,
-        loader() {
-            return {user: authProvider.user};
+        async loader() {
+            return {user: await authProvider.getCurrentUser()};
         },
         errorElement: <GlobalErrorPage/>,
         children: [
@@ -41,7 +45,9 @@ const router = createBrowserRouter([
             },
             {
                 path: "settings",
-                element: <>Settings</>
+                element: <AccountSettings/>,
+                loader: accountSettingsLoader,
+                action: accountSettingsAction
             },
             {
                 path: "admin",

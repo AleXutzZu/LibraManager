@@ -17,7 +17,7 @@ type LoaderData = {
 }
 
 export async function loader(): Promise<LoaderData | Response> {
-    if (!authProvider.isAuthenticated) return redirect("/login");
+    if (!authProvider.isAuthenticated()) return redirect("/login");
     const fetch = await invoke("fetch_books");
     return {books: fetch as Book[]};
 }
