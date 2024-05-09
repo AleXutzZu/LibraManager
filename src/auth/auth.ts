@@ -35,6 +35,10 @@ class AuthProvider {
         this.user = await invoke("fetch_user", {username: this.user.username});
         return this.user;
     }
+
+    public getUsername() : string | undefined {
+        return this.user?.username;
+    }
 }
 
 export const authProvider = new AuthProvider();
