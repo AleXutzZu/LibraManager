@@ -1,9 +1,10 @@
 import {authProvider, User} from "../../auth/auth.ts";
-import {ActionFunctionArgs, redirect, useNavigate, useRouteLoaderData, useSubmit} from "react-router-dom";
+import {ActionFunctionArgs, redirect, useNavigate, useSubmit} from "react-router-dom";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import Input from "../util/Input.tsx";
 import {invoke} from "@tauri-apps/api/tauri";
+import {useRootData} from "../util/useRootData.ts";
 
 export async function loader() {
     if (!authProvider.isAuthenticated) return redirect("/login");
@@ -33,7 +34,7 @@ export async function action({request}: ActionFunctionArgs) {
 }
 
 export default function AccountSettings() {
-    const {user} = useRouteLoaderData("root") as { user: User };
+    const {user} = useRootData() as {user: User};
     const submit = useSubmit();
     const navigate = useNavigate();
 
