@@ -12,7 +12,6 @@ use libra_manager::models::database::{Book, Borrow, Client, NewBorrow, UpdateUse
 use libra_manager::models::database::joined_data::{BookBorrow, ClientBorrow};
 use libra_manager::SerializedResult;
 use libra_manager::settings::SettingsLoader;
-use diesel::debug_query;
 
 #[tauri::command]
 fn get_library(settings_loader: State<SettingsLoader>) -> String {
@@ -256,14 +255,7 @@ fn update_user(database: State<DatabaseConnection>, user: UpdateUser, password: 
     if user_password != password {
         return Err(AuthError);
     }
-
-    let query = diesel::update(&user).set(&user);
-
-    let dbg = debug_query::<diesel::sqlite::Sqlite, _>(&query);
-    println!("{:?}", dbg);
-
-    query.execute(client)?;
-
+    diesel::update(&user).set(&user).execute(client)?;
     Ok(())
 }
 
