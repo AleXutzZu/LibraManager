@@ -11,12 +11,17 @@ use libra_manager::Error::AuthError;
 use libra_manager::models::database::{Book, Borrow, Client, NewBorrow, UpdateUser, User};
 use libra_manager::models::database::joined_data::{BookBorrow, ClientBorrow};
 use libra_manager::SerializedResult;
-use libra_manager::settings::SettingsLoader;
+use libra_manager::settings::{Settings, SettingsLoader};
 
 #[tauri::command]
-fn get_library(settings_loader: State<SettingsLoader>) -> String {
+fn get_settings(settings_loader: State<SettingsLoader>) -> Settings {
     let settings = settings_loader.load().unwrap();
-    settings.library_name
+    settings
+}
+
+#[tauri::command]
+fn save_settings(settings_loader: State<SettingsLoader>, settings: Settings) -> () {
+    settings_loader.store(settings).unwrap();
 }
 
 #[tauri::command]
@@ -271,7 +276,8 @@ fn fetch_user(database: State<DatabaseConnection>, username: String) -> Serializ
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            get_library,
+            get_settings,
+            save_settings,
             login,
             fetch_books,
             fetch_book,

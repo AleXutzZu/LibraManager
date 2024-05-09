@@ -10,7 +10,7 @@ pub enum Error {
     #[error(transparent)]
     SerdeJson(#[from] serde_json::Error),
     #[error("Authentication error")]
-    AuthError
+    AuthError,
 }
 
 impl serde::Serialize for Error {
@@ -58,13 +58,15 @@ pub mod settings {
     use serde::{Deserialize, Serialize};
 
     #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "camelCase")]
     pub struct Settings {
         pub library_name: String,
+        pub camera_device_id: Option<String>,
     }
 
     impl Default for Settings {
         fn default() -> Self {
-            Self { library_name: "Librarie".to_string() }
+            Self { library_name: "Librarie".to_string(), camera_device_id: None }
         }
     }
 
@@ -85,11 +87,11 @@ pub mod settings {
         pub fn load(&self) -> Result<Settings, std::io::Error> {
             match std::fs::File::open(&self.path) {
                 Ok(mut config) => {
-                  let mut contents: String = String::new();
+                    let mut contents: String = String::new();
                     config.read_to_string(&mut contents)?;
 
                     Ok(toml::from_str(&*contents).unwrap())
-                },
+                }
                 Err(ref e) if e.kind() == std::io::ErrorKind::NotFound => {
                     self.store(Settings::default())?;
                     Ok(Settings::default())
