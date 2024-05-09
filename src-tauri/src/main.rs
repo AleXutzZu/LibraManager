@@ -22,7 +22,7 @@ fn get_library(settings_loader: State<SettingsLoader>) -> String {
 #[tauri::command]
 fn login(database: State<DatabaseConnection>, username: String, password: String) -> SerializedResult<User> {
     use libra_manager::schema::users::dsl::users;
-    use diesel::{RunQueryDsl, QueryDsl};
+    use diesel::{QueryDsl, RunQueryDsl};
 
     let client = &mut *database.client.lock().unwrap();
 
@@ -37,7 +37,7 @@ fn login(database: State<DatabaseConnection>, username: String, password: String
 #[tauri::command]
 fn fetch_books(database: State<DatabaseConnection>) -> SerializedResult<Vec<Book>> {
     use libra_manager::schema::books::dsl::*;
-    use diesel::{QueryDsl, SelectableHelper, RunQueryDsl};
+    use diesel::{QueryDsl, RunQueryDsl, SelectableHelper};
 
     let client = &mut *database.client.lock().unwrap();
     let result = books.select(Book::as_select()).load(client)?;
@@ -47,7 +47,7 @@ fn fetch_books(database: State<DatabaseConnection>) -> SerializedResult<Vec<Book
 #[tauri::command]
 fn fetch_book(database: State<DatabaseConnection>, isbn: String) -> SerializedResult<Option<Book>> {
     use libra_manager::schema::books::dsl::books;
-    use diesel::{QueryDsl, RunQueryDsl, OptionalExtension};
+    use diesel::{OptionalExtension, QueryDsl, RunQueryDsl};
 
     let client = &mut *database.client.lock().unwrap();
     let result = books.find(isbn).get_result(client).optional()?;
@@ -77,7 +77,7 @@ fn delete_book(database: State<DatabaseConnection>, isbn: String) -> SerializedR
 
 #[tauri::command]
 fn update_book(database: State<DatabaseConnection>, book: Book) -> SerializedResult<()> {
-    use diesel::{RunQueryDsl};
+    use diesel::RunQueryDsl;
     let client = &mut *database.client.lock().unwrap();
 
     diesel::update(&book).set(&book).execute(client)?;
@@ -87,7 +87,7 @@ fn update_book(database: State<DatabaseConnection>, book: Book) -> SerializedRes
 #[tauri::command]
 fn fetch_clients(database: State<DatabaseConnection>) -> SerializedResult<Vec<Client>> {
     use libra_manager::schema::clients::dsl::*;
-    use diesel::{QueryDsl, SelectableHelper, RunQueryDsl};
+    use diesel::{QueryDsl, RunQueryDsl, SelectableHelper};
 
     let client = &mut *database.client.lock().unwrap();
     let result = clients.select(Client::as_select()).load(client)?;
@@ -97,7 +97,7 @@ fn fetch_clients(database: State<DatabaseConnection>) -> SerializedResult<Vec<Cl
 #[tauri::command]
 fn fetch_client(database: State<DatabaseConnection>, id: String) -> SerializedResult<Option<Client>> {
     use libra_manager::schema::clients::dsl::clients;
-    use diesel::{QueryDsl, RunQueryDsl, OptionalExtension};
+    use diesel::{OptionalExtension, QueryDsl, RunQueryDsl};
 
     let client = &mut *database.client.lock().unwrap();
     let result = clients.find(id).get_result(client).optional()?;
@@ -130,7 +130,7 @@ fn delete_client(database: State<DatabaseConnection>, id: String) -> SerializedR
 
 #[tauri::command]
 fn update_client(database: State<DatabaseConnection>, client: Client) -> SerializedResult<()> {
-    use diesel::{RunQueryDsl};
+    use diesel::RunQueryDsl;
     let db_client = &mut *database.client.lock().unwrap();
 
     diesel::update(&client).set(&client).execute(db_client)?;
@@ -141,8 +141,8 @@ fn update_client(database: State<DatabaseConnection>, client: Client) -> Seriali
 fn fetch_borrowers(database: State<DatabaseConnection>, isbn: String) -> SerializedResult<Vec<ClientBorrow>> {
     use libra_manager::schema::clients::dsl::clients;
     use libra_manager::schema::books::dsl::books;
-    use diesel::{RunQueryDsl, SelectableHelper, QueryDsl, BelongingToDsl};
-    use diesel::associations::{HasTable};
+    use diesel::{BelongingToDsl, QueryDsl, RunQueryDsl, SelectableHelper};
+    use diesel::associations::HasTable;
 
     let client = &mut *database.client.lock().unwrap();
 
@@ -160,8 +160,8 @@ fn fetch_borrowers(database: State<DatabaseConnection>, isbn: String) -> Seriali
 fn fetch_borrowed_books(database: State<DatabaseConnection>, id: String) -> SerializedResult<Vec<BookBorrow>> {
     use libra_manager::schema::clients::dsl::clients;
     use libra_manager::schema::books::dsl::books;
-    use diesel::{RunQueryDsl, SelectableHelper, QueryDsl, BelongingToDsl};
-    use diesel::associations::{HasTable};
+    use diesel::{BelongingToDsl, QueryDsl, RunQueryDsl, SelectableHelper};
+    use diesel::associations::HasTable;
     let db_client = &mut *database.client.lock().unwrap();
 
     let client: Client = clients.find(id).get_result(db_client).unwrap();
@@ -181,8 +181,8 @@ fn is_book_available(database: State<DatabaseConnection>, isbn: String, client_i
     use libra_manager::schema::books::dsl::books;
     use libra_manager::schema::clients::dsl::clients;
     use libra_manager::schema::borrows::returned;
-    use diesel::{RunQueryDsl, SelectableHelper, QueryDsl, BelongingToDsl, OptionalExtension, ExpressionMethods};
-    use diesel::associations::{HasTable};
+    use diesel::{BelongingToDsl, ExpressionMethods, OptionalExtension, QueryDsl, RunQueryDsl, SelectableHelper};
+    use diesel::associations::HasTable;
 
     let client = &mut *database.client.lock().unwrap();
 
@@ -246,7 +246,7 @@ fn update_borrow(database: State<DatabaseConnection>, id: i32, returned: bool, e
 
 #[tauri::command]
 fn update_user(database: State<DatabaseConnection>, user: UpdateUser, password: String) -> SerializedResult<()> {
-    use diesel::{RunQueryDsl, QueryDsl};
+    use diesel::{QueryDsl, RunQueryDsl};
     use libra_manager::schema::users::dsl::users;
     let client = &mut *database.client.lock().unwrap();
 
@@ -261,7 +261,7 @@ fn update_user(database: State<DatabaseConnection>, user: UpdateUser, password: 
 
 #[tauri::command]
 fn fetch_user(database: State<DatabaseConnection>, username: String) -> SerializedResult<User> {
-    use diesel::{RunQueryDsl, QueryDsl};
+    use diesel::{QueryDsl, RunQueryDsl};
     use libra_manager::schema::users::dsl::users;
     let client = &mut *database.client.lock().unwrap();
     let user: User = users.find(&username).get_result(client).unwrap();
