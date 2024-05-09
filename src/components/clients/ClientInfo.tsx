@@ -197,10 +197,10 @@ function BorrowCard(props: BookBorrow) {
 
     return (
         <div className="grid grid-cols-2 gap-4 mt-3 border p-2 rounded-lg">
-            <div className="w-full">
+            <Link className="w-full" to={`/books/${props.book.isbn}`}>
                 <h3 className="block mb-2 text-lg font-medium">Titlu</h3>
                 <h3 className="text-lg block w-full">{props.book.title}</h3>
-            </div>
+            </Link>
             <div className="w-full">
                 <h3 className="block mb-2 text-lg font-medium">Autor</h3>
                 <h3 className="text-lg block w-full">{props.book.author}</h3>
@@ -215,7 +215,7 @@ function BorrowCard(props: BookBorrow) {
                     <span className="text-red font-medium">(Întârziat)</span>}</h3>
             </div>
             <Form method="patch">
-                <input className="display-none" name="endDate" value={props.borrow.endDate}/>
+                <input className="display-none" name="endDate" value={props.borrow.endDate} readOnly/>
                 <button type="submit" name="id" value={props.borrow.id}
                         className="w-full text-black-5 text-lg font-medium text-center bg-orange rounded-2xl">Prelungește
                 </button>
@@ -237,10 +237,10 @@ function BorrowCard(props: BookBorrow) {
 function HistoryCard(props: BookBorrow) {
     return (
         <div className="grid grid-cols-2 gap-4 mt-3 border p-2 rounded-lg">
-            <div className="w-full">
+            <Link className="w-full" to={`/books/${props.book.isbn}`}>
                 <h3 className="block mb-2 text-lg font-medium">Titlu</h3>
                 <h3 className="text-lg block w-full">{props.book.title}</h3>
-            </div>
+            </Link>
             <div className="w-full">
                 <h3 className="block mb-2 text-lg font-medium">Autor</h3>
                 <h3 className="text-lg block w-full">{props.book.author}</h3>
