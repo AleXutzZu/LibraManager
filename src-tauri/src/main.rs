@@ -254,22 +254,26 @@ fn update_user(database: State<DatabaseConnection>, user: UpdateUser, password: 
     let user_password = users.find(&user.username).get_result::<User>(client).unwrap().password;
 
     if user_password != password {
-        return Err(AuthError)
+        return Err(AuthError);
     }
 
     let query = diesel::update(&user).set(&user);
 
     let dbg = debug_query::<diesel::sqlite::Sqlite, _>(&query);
     println!("{:?}", dbg);
+
+    query.execute(client)?;
+
     Ok(())
 }
 
 #[tauri::command]
-fn fetch_user(database: State<DatabaseConnection>, username: String) ->SerializedResult<User> {
+fn fetch_user(database: State<DatabaseConnection>, username: String) -> SerializedResult<User> {
     use diesel::{RunQueryDsl, QueryDsl};
     use libra_manager::schema::users::dsl::users;
     let client = &mut *database.client.lock().unwrap();
-    Ok(users.find(&username).first::<User>(client).unwrap())
+    let user: User = users.find(&username).get_result(client).unwrap();
+    Ok(user)
 }
 
 fn main() {

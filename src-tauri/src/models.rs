@@ -9,13 +9,14 @@ pub mod database {
     #[serde(rename_all = "camelCase")]
     pub struct User {
         pub username: String,
+        #[serde(skip_serializing)]
+        pub password: String,
         #[diesel(column_name = firstName)]
         pub first_name: String,
         #[diesel(column_name = lastName)]
         pub last_name: String,
         pub role: String,
-        #[serde(skip_serializing)]
-        pub password: String,
+
     }
     #[derive(Identifiable, AsChangeset, Deserialize)]
     #[serde(rename_all = "camelCase")]
