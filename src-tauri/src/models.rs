@@ -17,6 +17,19 @@ pub mod database {
         #[serde(skip_serializing)]
         pub password: String,
     }
+    #[derive(Identifiable, AsChangeset, Deserialize)]
+    #[serde(rename_all = "camelCase")]
+    #[diesel(primary_key(username))]
+    #[diesel(table_name = crate::schema::users)]
+    #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
+    pub struct UpdateUser {
+        pub username: String,
+        #[diesel(column_name = firstName)]
+        pub first_name: String,
+        #[diesel(column_name = lastName)]
+        pub last_name: String,
+        pub password: Option<String>,
+    }
 
     #[derive(Queryable, Selectable, Serialize, Insertable, Deserialize, Identifiable, AsChangeset)]
     #[diesel(table_name = crate::schema::books)]

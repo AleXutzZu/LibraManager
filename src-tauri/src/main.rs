@@ -8,10 +8,11 @@ use tauri::{Manager, State};
 
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
-use libra_manager::models::database::{Book, Borrow, Client, NewBorrow, User};
+use libra_manager::models::database::{Book, Borrow, Client, NewBorrow, UpdateUser, User};
 use libra_manager::models::database::joined_data::{BookBorrow, ClientBorrow};
 use libra_manager::SerializedResult;
 use libra_manager::settings::SettingsLoader;
+use diesel::debug_query;
 
 #[tauri::command]
 fn get_library(settings_loader: State<SettingsLoader>) -> String {
@@ -150,9 +151,9 @@ fn fetch_borrowers(database: State<DatabaseConnection>, isbn: String) -> Seriali
     let result = Borrow::belonging_to(&book)
         .inner_join(clients::table())
         .select((Borrow::as_select(), Client::as_select()))
-        .load::<(Borrow,Client)>(client)?;
+        .load::<(Borrow, Client)>(client)?;
 
-    let collected = result.into_iter().map(|(borrow, client)| ClientBorrow{borrow, client}).collect::<Vec<ClientBorrow>>();
+    let collected = result.into_iter().map(|(borrow, client)| ClientBorrow { borrow, client }).collect::<Vec<ClientBorrow>>();
     Ok(collected)
 }
 
@@ -244,6 +245,33 @@ fn update_borrow(database: State<DatabaseConnection>, id: i32, returned: bool, e
     Ok(())
 }
 
+#[tauri::command]
+fn update_user(database: State<DatabaseConnection>, user: UpdateUser, password: String) -> SerializedResult<()> {
+    use diesel::{RunQueryDsl, QueryDsl};
+    use libra_manager::schema::users::dsl::users;
+    let client = &mut *database.client.lock().unwrap();
+
+    let user_password = users.find(&user.username).get_result::<User>(client).unwrap().password;
+
+    if user_password != password {
+        return Err(AuthError)
+    }
+
+    let query = diesel::update(&user).set(&user);
+
+    let dbg = debug_query::<diesel::sqlite::Sqlite, _>(&query);
+    println!("{:?}", dbg);
+    Ok(())
+}
+
+#[tauri::command]
+fn fetch_user(database: State<DatabaseConnection>, username: String) ->SerializedResult<User> {
+    use diesel::{RunQueryDsl, QueryDsl};
+    use libra_manager::schema::users::dsl::users;
+    let client = &mut *database.client.lock().unwrap();
+    Ok(users.find(&username).first::<User>(client).unwrap())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -264,7 +292,9 @@ fn main() {
             is_book_available,
             add_borrow,
             delete_borrow,
-            update_borrow
+            update_borrow,
+            update_user,
+            fetch_user
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();
