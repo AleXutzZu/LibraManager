@@ -29,6 +29,7 @@ import AccountSettings, {
 } from "./components/settings/AccountSettings.tsx";
 import {settingsProvider} from "./components/settings/settings.ts";
 import AdminSettings, {loader as adminSettingsLoader} from "./components/settings/AdminSettings.tsx";
+import GeneralSettings, {action as saveSettingsAction} from "./components/settings/GeneralSettings.tsx";
 
 const router = createBrowserRouter([
     {
@@ -57,7 +58,8 @@ const router = createBrowserRouter([
                 children: [
                     {
                         index: true,
-                        element: <>Index with global settings</>
+                        element: <GeneralSettings/>,
+                        action: saveSettingsAction
                     },
                     {
                         path: "users",
