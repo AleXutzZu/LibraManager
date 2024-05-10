@@ -24,8 +24,8 @@ export async function action({params, request}: ActionFunctionArgs<PathParams>) 
 
 export default function BookEdit() {
     const validationSchema = Yup.object({
-        title: Yup.string().required("Titlul este obligatoriu").matches(/^\w+$/, {message: "Titlul este invalid"}),
-        author: Yup.string().required("Autorul este obligatoriu").matches(/^\w+$/, {message: "Autorul este invalid"}),
+        title: Yup.string().required("Titlul este obligatoriu").matches(/^.+$/, {message: "Titlul este invalid"}),
+        author: Yup.string().required("Autorul este obligatoriu").matches(/^.+$/, {message: "Autorul este invalid"}),
         items: Yup.number().required("Exemplarele sunt obligatorii"),
     })
     const {book} = useLoaderData() as { book: Book };

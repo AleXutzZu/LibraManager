@@ -36,8 +36,8 @@ export async function action({request}: { request: Request }): Promise<ClientRes
 
 export default function ClientAdd() {
     const validationSchema = Yup.object({
-        firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^\w+$/, {message: "Prenumele este invalid"}),
-        lastName: Yup.string().required("Numele este obligatoriu").matches(/^\w+$/, {message: "Numele este invalid"}),
+        firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^.+$/, {message: "Prenumele este invalid"}),
+        lastName: Yup.string().required("Numele este obligatoriu").matches(/^.+$/, {message: "Numele este invalid"}),
         email: Yup.string().matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {message: "Email-ul este invalid"}).required("Email-ul este obligatoriu"),
         phone: Yup.string().required("Numărul este obligatoriu").matches(/^(0\d{9})$/, {message: "Numărul este invalid"}),
     })

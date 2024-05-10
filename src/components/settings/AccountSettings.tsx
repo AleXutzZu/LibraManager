@@ -42,9 +42,9 @@ export default function AccountSettings() {
     const error = useActionData() as { error: string } | undefined;
 
     const validationSchema = Yup.object({
-        firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^\w+$/, {message: "Prenumele este invalid"}),
-        lastName: Yup.string().required("Numele este obligatoriu").matches(/^\w+$/, {message: "Numele este invalid"}),
-        newPassword: Yup.string().matches(/^\w+$/, {message: "Parola este invalidă"})
+        firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^.+$/, {message: "Prenumele este invalid"}),
+        lastName: Yup.string().required("Numele este obligatoriu").matches(/^.+$/, {message: "Numele este invalid"}),
+        newPassword: Yup.string().matches(/^.+$/, {message: "Parola este invalidă"})
             .min(8, "Nu folosești min. 8 caractere")
             .max(16, "Folosești peste 16 caractere"),
         repeatPassword: Yup.string().oneOf([Yup.ref("newPassword")], "Parolele nu se potrivesc").when('newPassword', {
@@ -52,7 +52,7 @@ export default function AccountSettings() {
             then: schema => schema.defined("Parola nu poate lipsi"),
             otherwise: schema => schema.optional(),
         }),
-        password: Yup.string().required("Parola este obligatorie").matches(/^\w+$/, {message: "Parola este invalidă"}),
+        password: Yup.string().required("Parola este obligatorie").matches(/^.+$/, {message: "Parola este invalidă"}),
     })
 
     return (

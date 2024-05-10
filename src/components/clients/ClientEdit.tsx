@@ -37,8 +37,8 @@ export default function ClientEdit() {
     const data = useActionData() as { message: string } || undefined;
 
     const validationSchema = Yup.object({
-        firstName: Yup.string().matches(/^\w+$/, {message: "Prenumele este invalid"}).required("Prenumele este obligatoriu"),
-        lastName: Yup.string().matches(/^\w+$/, {message: "Numele este invalid"}).required("Numele este obligatoriu"),
+        firstName: Yup.string().matches(/^.+$/, {message: "Prenumele este invalid"}).required("Prenumele este obligatoriu"),
+        lastName: Yup.string().matches(/^.+$/, {message: "Numele este invalid"}).required("Numele este obligatoriu"),
         email: Yup.string().matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {message: "Email-ul este invalid"}).required("Email-ul este obligatoriu"),
         phone: Yup.string().matches(/^(0\d{9})$/, {message: "Numărul este invalid"}).required("Numărul este obligatoriu"),
     });
