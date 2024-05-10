@@ -28,7 +28,7 @@ import AccountSettings, {
     loader as accountSettingsLoader
 } from "./components/settings/AccountSettings.tsx";
 import {settingsProvider} from "./components/settings/settings.ts";
-import AdminSettings from "./components/settings/AdminSettings.tsx";
+import AdminSettings, {loader as adminSettingsLoader} from "./components/settings/AdminSettings.tsx";
 
 const router = createBrowserRouter([
     {
@@ -52,7 +52,23 @@ const router = createBrowserRouter([
             },
             {
                 path: "admin",
-                element: <AdminSettings/>
+                element: <AdminSettings/>,
+                loader: adminSettingsLoader,
+                children: [
+                    {
+                        index: true,
+                        element: <>Index with global settings</>
+                    },
+                    {
+                        path: "users",
+                        element: <>Users</>,
+                        children: [
+                            {
+                                path: "delete"
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 path: "login",
