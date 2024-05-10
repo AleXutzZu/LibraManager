@@ -87,7 +87,7 @@ export default function BookAdd() {
                                            className="border text-gray-900 text-sm rounded-lg block w-full p-2.5"/>
                                 </div>
                             </div>
-                            <button type="submit" disabled={formik.isSubmitting}
+                            <button type="submit"
                                     className="inline-flex items-center px-2.5 py-2.5 mt-6 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
                                 Adaugă carte
                             </button>

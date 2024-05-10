@@ -59,7 +59,7 @@ export default function ClientAdd() {
                 onSubmit={async (values) => {
                     submit(values, {method: "post"});
                 }}>
-            {formik => (
+            {_formik => (
                 <div className="overflow-auto flex-grow flex items-center justify-center">
                     <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5">
                         <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
@@ -89,7 +89,7 @@ export default function ClientAdd() {
                                                placeholder="Tastează numărul de telefon"/>
                                     </div>
                                 </div>
-                                <button type="submit" disabled={formik.isSubmitting}
+                                <button type="submit"
                                         className="inline-flex items-center px-2.5 py-2.5 mt-6 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
                                     Adaugă client
                                 </button>

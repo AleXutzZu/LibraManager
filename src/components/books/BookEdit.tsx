@@ -38,7 +38,7 @@ export default function BookEdit() {
                 onSubmit={async (values) => {
                     submit(values, {method: "post"});
                 }}>
-            {formik => (
+            {_formik => (
                 <section className="bg-black-5 m-auto rounded-xl shadow-black-10 shadow-md">
                     <div className="py-8 px-4 mx-auto max-w-2xl lg:py-16">
                         <h2 className="mb-4 text-xl font-bold">Editează carte</h2>
@@ -63,7 +63,7 @@ export default function BookEdit() {
                                            className="border text-gray-900 text-sm rounded-lg block w-full p-2.5"/>
                                 </div>
                                 <div className="w-full">
-                                    <button type="submit" disabled={formik.isSubmitting}
+                                    <button type="submit"
                                             className="w-full block items-center px-0.5 py-1.5 mt-6 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
                                         Salvare
                                     </button>

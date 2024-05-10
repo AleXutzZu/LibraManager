@@ -52,7 +52,7 @@ export default function ClientEdit() {
         }} validationSchema={validationSchema} onSubmit={async (values) => {
             submit(values, {method: "post"});
         }}>
-            {formik => (
+            {_formik => (
 
                 <div className="overflow-auto flex-grow flex items-center justify-center">
                     <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5">
@@ -89,7 +89,7 @@ export default function ClientEdit() {
                                     </div>
 
                                     <div className="w-full">
-                                        <button type="submit" disabled={formik.isSubmitting}
+                                        <button type="submit"
                                                 className="w-full block items-center px-0.5 py-1.5 mt-6 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
                                             Salvare
                                         </button>

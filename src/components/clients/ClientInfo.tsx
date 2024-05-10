@@ -155,7 +155,7 @@ export default function ClientInfo() {
                                                 <Scanner hints={decodeHints} onDecode={(result) => {
                                                     formik.setFieldValue("isbn", result.getText(), true);
                                                 }}/>
-                                                <button type="submit" disabled={formik.isSubmitting}
+                                                <button type="submit"
                                                         className="!ml-4 px-2.5 py-2.5 text-black-5 text-sm font-medium text-center bg-orange rounded-2xl">
                                                     Adaugă
                                                 </button>
