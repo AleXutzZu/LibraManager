@@ -141,7 +141,6 @@ pub mod book_api {
     #[derive(Deserialize, Serialize, Debug)]
     pub struct Author {
         pub name: String,
-        pub bio: String,
     }
 
     #[derive(Serialize, Debug)]
