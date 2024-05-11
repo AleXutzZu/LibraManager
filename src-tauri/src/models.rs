@@ -135,6 +135,7 @@ pub mod book_api {
         pub publish_date: String,
         pub authors: Option<Vec<OpenLibraryAuthorKey>>,
         pub number_of_pages: i64,
+        pub isbn_13: Vec<String>,
     }
 
     #[derive(Deserialize, Serialize, Debug)]
@@ -151,6 +152,7 @@ pub mod book_api {
         pub publish_date: String,
         pub authors: Option<Vec<Author>>,
         pub number_of_pages: i64,
+        pub isbn_13: Vec<String>,
     }
 
     async fn convert_to_author(open_library_author_keys: Vec<OpenLibraryAuthorKey>) -> SerializedResult<Vec<Author>> {
@@ -176,6 +178,7 @@ pub mod book_api {
                 publish_date: open_library_book_data.publish_date,
                 authors,
                 number_of_pages: open_library_book_data.number_of_pages,
+                isbn_13: open_library_book_data.isbn_13,
             })
         }
     }
