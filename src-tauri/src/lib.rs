@@ -9,6 +9,8 @@ pub enum Error {
     Diesel(#[from] diesel::result::Error),
     #[error(transparent)]
     SerdeJson(#[from] serde_json::Error),
+    #[error(transparent)]
+    Request(#[from] reqwest::Error),
     #[error("Authentication error")]
     AuthError,
 }

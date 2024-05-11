@@ -8,6 +8,7 @@ use tauri::{Manager, State};
 
 use libra_manager::database::DatabaseConnection;
 use libra_manager::Error::AuthError;
+use libra_manager::models::book_api::BookData;
 use libra_manager::models::database::{Book, Borrow, Client, NewBorrow, UpdateUser, User};
 use libra_manager::models::database::joined_data::{BookBorrow, ClientBorrow};
 use libra_manager::SerializedResult;
@@ -284,7 +285,7 @@ fn fetch_users(database: State<DatabaseConnection>) -> SerializedResult<Vec<User
 }
 
 #[tauri::command]
-fn create_user(database: State<DatabaseConnection>, user:User) -> SerializedResult<()> {
+fn create_user(database: State<DatabaseConnection>, user: User) -> SerializedResult<()> {
     use libra_manager::schema::users::dsl::*;
     use diesel::RunQueryDsl;
     use diesel::associations::HasTable;
@@ -293,13 +294,19 @@ fn create_user(database: State<DatabaseConnection>, user:User) -> SerializedResu
     diesel::insert_into(users::table()).values(&user).execute(client)?;
     Ok(())
 }
+
 #[tauri::command]
-fn delete_user(database: State<DatabaseConnection>, username: String) ->SerializedResult<()> {
+fn delete_user(database: State<DatabaseConnection>, username: String) -> SerializedResult<()> {
     use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
     use libra_manager::schema::users::dsl::users;
     let client = &mut *database.client.lock().unwrap();
     diesel::delete(users.filter(libra_manager::schema::users::username.eq(&username))).execute(client)?;
     Ok(())
+}
+
+#[tauri::command]
+async fn lookup_book(isbn: String) -> SerializedResult<Option<BookData>> {
+    Ok(libra_manager::models::book_api::fetch_book(isbn).await?)
 }
 
 fn main() {
@@ -328,7 +335,8 @@ fn main() {
             fetch_user,
             fetch_users,
             create_user,
-            delete_user
+            delete_user,
+            lookup_book
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();

@@ -1,7 +1,7 @@
 pub mod database {
     use diesel::{Queryable, Selectable};
-    use serde::{Deserialize, Serialize};
     use diesel::prelude::*;
+    use serde::{Deserialize, Serialize};
 
     #[derive(Queryable, Selectable, Serialize, Deserialize, Insertable)]
     #[diesel(table_name = crate::schema::users)]
@@ -18,6 +18,7 @@ pub mod database {
         pub role: String,
 
     }
+
     #[derive(Identifiable, AsChangeset, Deserialize)]
     #[serde(rename_all = "camelCase")]
     #[diesel(primary_key(username))]
@@ -93,6 +94,7 @@ pub mod database {
 
     pub mod joined_data {
         use serde::Serialize;
+
         use crate::models::database::{Book, Borrow, Client};
 
         #[derive(Serialize)]
@@ -105,6 +107,90 @@ pub mod database {
         pub struct ClientBorrow {
             pub client: Client,
             pub borrow: Borrow,
+        }
+    }
+}
+
+pub mod book_api {
+    use reqwest::StatusCode;
+    use serde::{Deserialize, Serialize};
+
+    use crate::SerializedResult;
+
+    #[derive(Deserialize, Debug)]
+    struct OpenLibraryAuthorKey {
+        pub key: String,
+    }
+
+    impl OpenLibraryAuthorKey {
+        pub async fn to_author(self) -> SerializedResult<Author> {
+            Ok(fetch_author(self).await?)
+        }
+    }
+
+    #[derive(Deserialize, Debug)]
+    struct OpenLibraryBookData {
+        pub title: String,
+        pub covers: Vec<i64>,
+        pub publish_date: String,
+        pub authors: Vec<OpenLibraryAuthorKey>,
+    }
+
+    #[derive(Deserialize, Serialize, Debug)]
+    pub struct Author {
+        pub name: String,
+        pub bio: String,
+    }
+
+    #[derive(Serialize, Debug)]
+    #[serde(rename_all = "camelCase")]
+    pub struct BookData {
+        pub title: String,
+        pub covers: Vec<i64>,
+        pub publish_date: String,
+        pub authors: Vec<Author>,
+    }
+
+    async fn convert_to_author(open_library_author_keys: Vec<OpenLibraryAuthorKey>) -> SerializedResult<Vec<Author>> {
+        let mut result: Vec<Author> = Vec::new();
+        for key in open_library_author_keys {
+            result.push(key.to_author().await?);
+        }
+
+        Ok(result)
+    }
+
+    impl BookData {
+        async fn from(open_library_book_data: OpenLibraryBookData) -> SerializedResult<Self> {
+            let authors = convert_to_author(open_library_book_data.authors).await?;
+
+            Ok(Self {
+                title: open_library_book_data.title,
+                covers: open_library_book_data.covers,
+                publish_date: open_library_book_data.publish_date,
+                authors,
+            })
+        }
+    }
+
+    async fn fetch_author(key: OpenLibraryAuthorKey) -> SerializedResult<Author> {
+        let author_data = reqwest::get(format!("https://openlibrary.org{}.json", key.key))
+            .await?
+            .json::<Author>()
+            .await?;
+        Ok(author_data)
+    }
+
+    pub async fn fetch_book(isbn: String) -> SerializedResult<Option<BookData>> {
+        let response = reqwest::get(format!("https://openlibrary.org/isbn/{}.json", isbn))
+            .await?;
+        return match response.status() {
+            StatusCode::OK => {
+                let data = response.json::<OpenLibraryBookData>().await?;
+                let book = BookData::from(data).await?;
+                Ok(Some(book))
+            },
+            _ => Ok(None)
         }
     }
 }
