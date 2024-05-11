@@ -3,7 +3,7 @@ pub mod database {
     use serde::{Deserialize, Serialize};
     use diesel::prelude::*;
 
-    #[derive(Queryable, Selectable, Serialize, Insertable)]
+    #[derive(Queryable, Selectable, Serialize, Deserialize, Insertable)]
     #[diesel(table_name = crate::schema::users)]
     #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
     #[serde(rename_all = "camelCase")]

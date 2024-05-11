@@ -273,6 +273,35 @@ fn fetch_user(database: State<DatabaseConnection>, username: String) -> Serializ
     Ok(user)
 }
 
+#[tauri::command]
+fn fetch_users(database: State<DatabaseConnection>) -> SerializedResult<Vec<User>> {
+    use libra_manager::schema::users::dsl::*;
+    use diesel::{QueryDsl, RunQueryDsl, SelectableHelper};
+
+    let client = &mut *database.client.lock().unwrap();
+    let result = users.select(User::as_select()).load(client)?;
+    Ok(result)
+}
+
+#[tauri::command]
+fn create_user(database: State<DatabaseConnection>, user:User) -> SerializedResult<()> {
+    use libra_manager::schema::users::dsl::*;
+    use diesel::RunQueryDsl;
+    use diesel::associations::HasTable;
+
+    let client = &mut *database.client.lock().unwrap();
+    diesel::insert_into(users::table()).values(&user).execute(client)?;
+    Ok(())
+}
+#[tauri::command]
+fn delete_user(database: State<DatabaseConnection>, username: String) ->SerializedResult<()> {
+    use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl};
+    use libra_manager::schema::users::dsl::users;
+    let client = &mut *database.client.lock().unwrap();
+    diesel::delete(users.filter(libra_manager::schema::users::username.eq(&username))).execute(client)?;
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -296,7 +325,10 @@ fn main() {
             delete_borrow,
             update_borrow,
             update_user,
-            fetch_user
+            fetch_user,
+            fetch_users,
+            create_user,
+            delete_user
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();

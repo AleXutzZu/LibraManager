@@ -30,6 +30,11 @@ import AccountSettings, {
 import {settingsProvider} from "./components/settings/settings.ts";
 import AdminSettings, {loader as adminSettingsLoader} from "./components/settings/AdminSettings.tsx";
 import GeneralSettings, {action as saveSettingsAction} from "./components/settings/GeneralSettings.tsx";
+import UserManagement, {
+    loader as userManagementLoader,
+    action as userManagementAction,
+    deleteAction as deleteUserAction
+} from "./components/settings/UserManagement.tsx";
 
 const router = createBrowserRouter([
     {
@@ -63,10 +68,13 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "users",
-                        element: <>Users</>,
+                        element: <UserManagement/>,
+                        loader: userManagementLoader,
+                        action: userManagementAction,
                         children: [
                             {
-                                path: "delete"
+                                path: "delete",
+                                action: deleteUserAction
                             }
                         ]
                     }
