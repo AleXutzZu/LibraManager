@@ -35,6 +35,10 @@ import UserManagement, {
     action as userManagementAction,
     deleteAction as deleteUserAction
 } from "./components/settings/UserManagement.tsx";
+import BookLookupPage, {
+    action as bookLookupAction,
+    loader as bookLookupLoader
+} from "./components/lookup/BookLookupPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -88,7 +92,9 @@ const router = createBrowserRouter([
             },
             {
                 path: "lookup",
-                element: <>Lookup page</>
+                element: <BookLookupPage/>,
+                action: bookLookupAction,
+                loader: bookLookupLoader,
             },
             {
                 path: "books",
