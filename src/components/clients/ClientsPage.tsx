@@ -61,7 +61,7 @@ export default function ClientsPage() {
             </Link>
             {filtered.length === 0 && <p className="font-medium mt-3">Nu există clienți</p>}
             <div
-                className="flex flex-col items-start w-full overflow-auto h-4/5 max-h-fit scrollbar-thin pl-4 pr-0.5">
+                className="flex flex-col items-start w-full overflow-auto h-4/5 max-h-fit scrollbar-thin px-4 divide-y">
                 {filtered.map(client => <ClientLink {...client} key={client.id}/>)}
             </div>
         </div>
@@ -72,7 +72,7 @@ export default function ClientsPage() {
 function ClientLink(props: Client) {
     const {id, lastName, firstName, phone} = props;
     return (
-        <Link to={`${id}`} className="py-2">
+        <Link to={`${id}`} className="py-2 w-full">
             <div className="flex flex-col items-start justify-between">
                 <h1 className="text-lg font-medium">{firstName} {lastName}</h1>
                 <h2 className="text-sm"><i>{phone}</i></h2>

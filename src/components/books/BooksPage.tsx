@@ -56,7 +56,7 @@ export default function BooksPage() {
                 </Link>
                 {filtered.length === 0 && <p className="font-medium mt-3">Nu există cărți</p>}
                 <div
-                    className="flex flex-col items-start w-full overflow-auto h-4/5 max-h-fit scrollbar-thin pl-4 pr-0.5">
+                    className="flex flex-col items-start w-full overflow-auto h-4/5 max-h-fit scrollbar-thin px-4 divide-y">
                     {filtered.map(book => <BookLink {...book} key={book.isbn}/>)}
                 </div>
             </div>
@@ -67,7 +67,7 @@ export default function BooksPage() {
 function BookLink(props: Book) {
     const {isbn, title, author} = props;
     return (
-        <Link to={`${isbn}`} className="py-2">
+        <Link to={`${isbn}`} className="py-2 w-full">
             <div className="flex flex-col items-start justify-between">
                 <h1 className="text-lg font-medium">{title}</h1>
                 <h2 className="text-sm"><i>{author}</i></h2>
