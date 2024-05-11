@@ -133,7 +133,8 @@ pub mod book_api {
         pub title: String,
         pub covers: Vec<i64>,
         pub publish_date: String,
-        pub authors: Vec<OpenLibraryAuthorKey>,
+        pub authors: Option<Vec<OpenLibraryAuthorKey>>,
+        pub number_of_pages: i64,
     }
 
     #[derive(Deserialize, Serialize, Debug)]
@@ -148,7 +149,8 @@ pub mod book_api {
         pub title: String,
         pub covers: Vec<i64>,
         pub publish_date: String,
-        pub authors: Vec<Author>,
+        pub authors: Option<Vec<Author>>,
+        pub number_of_pages: i64,
     }
 
     async fn convert_to_author(open_library_author_keys: Vec<OpenLibraryAuthorKey>) -> SerializedResult<Vec<Author>> {
@@ -162,13 +164,18 @@ pub mod book_api {
 
     impl BookData {
         async fn from(open_library_book_data: OpenLibraryBookData) -> SerializedResult<Self> {
-            let authors = convert_to_author(open_library_book_data.authors).await?;
+            let authors = if let Some(x) = open_library_book_data.authors {
+                Some(convert_to_author(x).await?)
+            } else {
+                None
+            };
 
             Ok(Self {
                 title: open_library_book_data.title,
                 covers: open_library_book_data.covers,
                 publish_date: open_library_book_data.publish_date,
                 authors,
+                number_of_pages: open_library_book_data.number_of_pages,
             })
         }
     }
@@ -189,8 +196,8 @@ pub mod book_api {
                 let data = response.json::<OpenLibraryBookData>().await?;
                 let book = BookData::from(data).await?;
                 Ok(Some(book))
-            },
+            }
             _ => Ok(None)
-        }
+        };
     }
 }
