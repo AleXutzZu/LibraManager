@@ -134,7 +134,7 @@ pub mod book_api {
         pub covers: Vec<i64>,
         pub publish_date: String,
         pub authors: Option<Vec<OpenLibraryAuthorKey>>,
-        pub number_of_pages: i64,
+        pub number_of_pages: Option<i64>,
         pub isbn_13: Vec<String>,
     }
 
@@ -151,7 +151,7 @@ pub mod book_api {
         pub covers: Vec<i64>,
         pub publish_date: String,
         pub authors: Option<Vec<Author>>,
-        pub number_of_pages: i64,
+        pub number_of_pages: Option<i64>,
         pub isbn_13: Vec<String>,
     }
 
