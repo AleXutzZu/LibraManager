@@ -62,10 +62,13 @@ export default function UserManagement() {
     }, [users, search]);
 
     const validationSchema = Yup.object({
-        username: Yup.string().required("Numele de utilizator este obligatoriu"),
-        password: Yup.string().required("Parola este obligatorie").min(8, "Trebuie minim 8 caractere").max(16, "Trebuie maxim 16 caractere"),
-        firstName: Yup.string().required("Prenumele este obligatoriu"),
-        lastName: Yup.string().required("Numele este obligatoriu"),
+        username: Yup.string().required("Numele de utilizator este obligatoriu").matches(/^\w+$/, {message: "Numele de utilizator este invalid"}),
+        password: Yup.string().required("Parola este obligatorie")
+            .min(8, "Trebuie minim 8 caractere")
+            .max(16, "Trebuie maxim 16 caractere")
+            .matches(/^\w+$/, {message: "Parola este invalidă"}),
+        firstName: Yup.string().required("Prenumele este obligatoriu").matches(/^.+$/, {message: "Prenumele este invalid"}),
+        lastName: Yup.string().required("Numele este obligatoriu").matches(/^.+$/, {message: "Numele este invalid"}),
         role: Yup.string().required("Role is required"),
     })
 
