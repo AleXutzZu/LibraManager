@@ -110,3 +110,18 @@ pub mod settings {
         }
     }
 }
+
+pub mod barcode {
+    use barcoders::generators::image::Image;
+    use barcoders::sym::code128::Code128;
+
+    pub fn create_badge(client_id_short: &str) {
+        let barcode = Code128::new(format!("\u{0181}{}", client_id_short)).unwrap();
+
+        let buffer = Image::image_buffer(50);
+        let encoded = barcode.encode();
+        let mut image = buffer.generate_buffer(&encoded[..]).unwrap();
+
+        image.save("test.png").unwrap()
+    }
+}
