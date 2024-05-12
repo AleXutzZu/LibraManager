@@ -22,6 +22,7 @@ export default function Scanner(props: Props) {
     return (
         <>
             <ScanIcon onClick={() => setShowScanner(true)}/>
-            {showScanner && <ScannerModal onDecodeResult={process} onClose={() => setShowScanner(false)}/>}
+            {showScanner &&
+                <ScannerModal onDecodeResult={process} onClose={() => setShowScanner(false)} hints={props.hints}/>}
         </>)
 }
