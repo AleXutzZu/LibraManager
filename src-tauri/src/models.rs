@@ -114,28 +114,50 @@ pub mod database {
 pub mod book_api {
     use reqwest::StatusCode;
     use serde::{Deserialize, Serialize};
+    use serde::de::DeserializeOwned;
 
     use crate::SerializedResult;
 
     #[derive(Deserialize, Debug)]
-    struct OpenLibraryAuthorKey {
+    struct OpenLibraryKey {
         pub key: String,
     }
 
-    impl OpenLibraryAuthorKey {
-        pub async fn to_author(self) -> SerializedResult<Author> {
-            Ok(fetch_author(self).await?)
+    impl OpenLibraryKey {
+        async fn fetch_data<T: DeserializeOwned>(&self) -> SerializedResult<T> {
+            let author_data = reqwest::get(format!("https://openlibrary.org{}.json", self.key))
+                .await?
+                .json::<T>()
+                .await?;
+            Ok(author_data)
         }
     }
+
 
     #[derive(Deserialize, Debug)]
     struct OpenLibraryBookData {
         pub title: String,
         pub covers: Vec<i64>,
         pub publish_date: String,
-        pub authors: Option<Vec<OpenLibraryAuthorKey>>,
+        pub authors: Option<Vec<OpenLibraryKey>>,
         pub number_of_pages: Option<i64>,
         pub isbn_13: Vec<String>,
+    }
+
+    impl OpenLibraryBookData {
+        pub async fn get_authors(&self) -> SerializedResult<Option<Vec<Author>>> {
+            if let Some(x) = &self.authors {
+                let mut result: Vec<Author> = Vec::new();
+
+                for key in x {
+                    result.push(key.fetch_data::<Author>().await?);
+                }
+
+                Ok(Some(result))
+            } else {
+                Ok(None)
+            }
+        }
     }
 
     #[derive(Deserialize, Serialize, Debug)]
@@ -154,22 +176,9 @@ pub mod book_api {
         pub isbn_13: Vec<String>,
     }
 
-    async fn convert_to_author(open_library_author_keys: Vec<OpenLibraryAuthorKey>) -> SerializedResult<Vec<Author>> {
-        let mut result: Vec<Author> = Vec::new();
-        for key in open_library_author_keys {
-            result.push(key.to_author().await?);
-        }
-
-        Ok(result)
-    }
-
     impl BookData {
         async fn from(open_library_book_data: OpenLibraryBookData) -> SerializedResult<Self> {
-            let authors = if let Some(x) = open_library_book_data.authors {
-                Some(convert_to_author(x).await?)
-            } else {
-                None
-            };
+            let authors = open_library_book_data.get_authors().await?;
 
             Ok(Self {
                 title: open_library_book_data.title,
@@ -180,14 +189,6 @@ pub mod book_api {
                 isbn_13: open_library_book_data.isbn_13,
             })
         }
-    }
-
-    async fn fetch_author(key: OpenLibraryAuthorKey) -> SerializedResult<Author> {
-        let author_data = reqwest::get(format!("https://openlibrary.org{}.json", key.key))
-            .await?
-            .json::<Author>()
-            .await?;
-        Ok(author_data)
     }
 
     pub async fn fetch_book(isbn: String) -> SerializedResult<Option<BookData>> {
