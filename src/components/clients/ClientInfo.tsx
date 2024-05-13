@@ -1,13 +1,22 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {Client, translator} from "./ClientsPage.tsx";
-import {ActionFunctionArgs, Form, Link, LoaderFunctionArgs, redirect, useLoaderData, useSubmit} from "react-router-dom";
+import {
+    ActionFunctionArgs,
+    Form,
+    Link,
+    LoaderFunctionArgs,
+    redirect,
+    useLoaderData,
+    useNavigation,
+    useSubmit
+} from "react-router-dom";
 import {Book} from "../books/BooksPage.tsx";
 import {Form as FormikForm, Formik} from "formik";
 import Input from "../util/Input.tsx";
 import Scanner from "../util/Scanner.tsx";
 import {BarcodeFormat, DecodeHintType} from "@zxing/library";
-import {addDays, format, compareAsc} from "date-fns";
-import {useState} from "react";
+import {addDays, format, compareAsc, compareDesc} from "date-fns";
+import {useEffect, useState} from "react";
 
 type PathParams = {
     clientId: string;
@@ -169,7 +178,7 @@ export default function ClientInfo() {
                                 )}
                             </Formik>
                         </div>
-                        <div className="w-full space-y-1.5 mt-10">
+                        <div className="w-full space-y-1.5 mt-10 max-h-96 overflow-auto">
                             {borrowedBooks.length === 0 &&
                                 <h1 className="font-bold text-center mx-auto text-xl">Nu există împrumuturi</h1>}
                             {borrowedBooks.map(borrowedBook => (
@@ -178,7 +187,7 @@ export default function ClientInfo() {
                     </details>
                     <details className="mb-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
                         <summary className="text-xl font-bold">Istoric</summary>
-                        <div className="w-full mt-10">
+                        <div className="w-full mt-10 max-h-96 overflow-auto">
                             {history.length === 0 &&
                                 <h1 className="font-bold text-center mx-auto text-xl">Nu există istoric</h1>}
                             {history.map(borrowedBook => (
