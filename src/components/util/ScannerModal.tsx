@@ -46,7 +46,7 @@ export default function ScannerModal(props: Props) {
     }, []);
 
     return (
-        <div className="absolute z-0 left-0 top-0 h-full w-full !m-0 overflow-auto bg-black-50 bg-opacity-90 flex">
+        <div className="absolute z-10 left-0 top-0 h-full w-full !m-0 overflow-auto bg-black-50 bg-opacity-90 flex">
             {!error && <div className="m-auto flex flex-col items-center space-y-3">
                 <video width={400} height={200} ref={videoRef}/>
                 <div className="font-bold text-2xl">
