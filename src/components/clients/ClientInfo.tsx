@@ -50,7 +50,7 @@ export async function loader({params}: LoaderFunctionArgs<PathParams>): Promise<
     return {
         client: client as Client,
         borrowedBooks: books.filter(book => !book.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate)),
-        history: books.filter(book => book.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate))
+        history: books.filter(book => book.borrow.returned).sort((a, b) => compareDesc(a.borrow.endDate, b.borrow.endDate))
     };
 }
 

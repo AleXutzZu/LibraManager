@@ -3,7 +3,7 @@ import {Book} from "./BooksPage.tsx";
 import {ActionFunctionArgs, Form, Link, LoaderFunctionArgs, redirect, useLoaderData} from "react-router-dom";
 import {Borrow} from "../clients/ClientInfo.tsx";
 import {Client} from "../clients/ClientsPage.tsx";
-import {compareAsc} from "date-fns";
+import {compareAsc, compareDesc} from "date-fns";
 
 type PathParams = {
     isbn: string,
@@ -27,7 +27,7 @@ export async function loader({params}: LoaderFunctionArgs<PathParams>): Promise<
     return {
         book: book as Book,
         clients: clients.filter(data => !data.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate)),
-        history: clients.filter(data => data.borrow.returned).sort((a, b) => compareAsc(a.borrow.endDate, b.borrow.endDate)),
+        history: clients.filter(data => data.borrow.returned).sort((a, b) => compareDesc(a.borrow.endDate, b.borrow.endDate)),
     };
 }
 
