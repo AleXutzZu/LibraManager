@@ -7,6 +7,7 @@ import Input from "../util/Input.tsx";
 import Scanner from "../util/Scanner.tsx";
 import {BarcodeFormat, DecodeHintType} from "@zxing/library";
 import {addDays, format, compareAsc} from "date-fns";
+import {useState} from "react";
 
 type PathParams = {
     clientId: string;
@@ -79,6 +80,8 @@ export async function action({params, request}: ActionFunctionArgs<PathParams>) 
 export default function ClientInfo() {
     const {client, borrowedBooks, history} = useLoaderData() as LoaderData;
     const submit = useSubmit();
+    const [message, setMessage] = useState<string | null>(null);
+
     const decodeHints = new Map<DecodeHintType, any>();
     decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
 
@@ -182,10 +185,25 @@ export default function ClientInfo() {
                                 <HistoryCard {...borrowedBook} key={borrowedBook.borrow.id}/>))}
                         </div>
                     </details>
-                    <button
-                        className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
+                    <button onClick={async () => {
+                        setMessage(null);
+                        try {
+                            const args = {
+                                clientIdShort: translator.fromUUID(client.id),
+                                clientName: `${client.firstName} ${client.lastName}`,
+                                date: format(new Date(), "yyyy-MM-dd"),
+                            };
+
+                            const path = await invoke("download_client_badge", args) as string;
+                            setMessage(path);
+                        } catch (error) {
+                            setMessage("S-a produs o eroare. Cel mai probabil nu există drepturi de scriere a fișierului");
+                        }
+                    }}
+                            className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
                         Emite legitimație
                     </button>
+                    {message && <h1 className="">{message}</h1>}
                 </div>
             </div>
         </div>
