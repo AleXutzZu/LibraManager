@@ -309,6 +309,20 @@ async fn lookup_book(isbn: String) -> SerializedResult<Option<BookData>> {
     Ok(libra_manager::models::book_api::fetch_book(isbn).await?)
 }
 
+#[tauri::command]
+fn download_client_badge(settings_loader: State<SettingsLoader>, client_id_short: String, client_name: String, date: NaiveDate) -> SerializedResult<String> {
+    let library_name = settings_loader.load().unwrap().library_name;
+    let buffer = libra_manager::barcode::create_badge(&client_id_short, &client_name, &library_name, date);
+
+    let mut downloads_path = tauri::api::path::download_dir().unwrap_or(std::path::PathBuf::new());
+
+    downloads_path.push(format!("Legitimatie {}.png", client_name));
+
+    buffer.save(&downloads_path)?;
+
+    Ok(downloads_path.display().to_string())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -336,7 +350,8 @@ fn main() {
             fetch_users,
             create_user,
             delete_user,
-            lookup_book
+            lookup_book,
+            download_client_badge
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();

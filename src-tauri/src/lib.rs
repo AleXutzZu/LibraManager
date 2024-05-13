@@ -11,6 +11,8 @@ pub enum Error {
     SerdeJson(#[from] serde_json::Error),
     #[error(transparent)]
     Request(#[from] reqwest::Error),
+    #[error(transparent)]
+    Image(#[from] image::ImageError),
     #[error("Authentication error")]
     AuthError,
 }
@@ -118,6 +120,7 @@ pub mod barcode {
     use ab_glyph::{FontRef, PxScale};
     use imageproc::drawing::{draw_text_mut, draw_filled_rect_mut, text_size};
     use imageproc::rect::Rect;
+    use chrono::NaiveDate;
 
     const BLACK: Rgba<u8> = Rgba::<u8>([0, 0, 0, 255]);
     const WIDTH: u32 = 600u32;
@@ -148,7 +151,7 @@ pub mod barcode {
         }
     }
 
-    pub fn create_badge(client_id_short: &str, client_name: &str, library_name: &str) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
+    pub fn create_badge(client_id_short: &str, client_name: &str, library_name: &str, date: NaiveDate) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
         let bold_font = FontRef::try_from_slice(include_bytes!("assets/bold_font.otf")).unwrap();
         let regular_font = FontRef::try_from_slice(include_bytes!("assets/regular_font.otf")).unwrap();
 
@@ -174,11 +177,12 @@ pub mod barcode {
         draw_text_mut(&mut image, BLACK, PADDING as i32, 80, HEADING_SCALE, &bold_font, "Nume complet");
         draw_text_mut(&mut image, BLACK, PADDING as i32, 100, BODY_SCALE, &regular_font, client_name);
 
+        let date_text = format!("{}", date.format("%d.%m.%Y"));
 
         let (w, _) = text_size(HEADING_SCALE, &bold_font, "Emis pe");
         draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 80, HEADING_SCALE, &bold_font, "Emis pe");
-        let (w, _) = text_size(BODY_SCALE, &regular_font, "12.05.2024");
-        draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 100, BODY_SCALE, &regular_font, "12.05.2024");
+        let (w, _) = text_size(BODY_SCALE, &regular_font, &date_text);
+        draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 100, BODY_SCALE, &regular_font, &date_text);
         return image;
     }
 }
