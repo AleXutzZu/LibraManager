@@ -75,7 +75,7 @@ export default function BookInfo() {
                             </button>
                         </Form>
                     </div>
-                    <details className="mb-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
+                    <details className="mt-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
                         <summary className="text-xl font-bold">Împrumuturi</summary>
                         <div className="w-full mt-10 max-h-96 overflow-auto">
                             {clients.length === 0 &&
