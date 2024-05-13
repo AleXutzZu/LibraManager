@@ -112,16 +112,73 @@ pub mod settings {
 }
 
 pub mod barcode {
-    use barcoders::generators::image::Image;
+    use barcoders::generators::image::{Image, Color, Rotation};
     use barcoders::sym::code128::Code128;
+    use image::{Rgba, RgbaImage, GenericImage, ImageBuffer};
+    use ab_glyph::{FontRef, PxScale};
+    use imageproc::drawing::{draw_text_mut, draw_filled_rect_mut, text_size};
+    use imageproc::rect::Rect;
 
-    pub fn create_badge(client_id_short: &str) {
+    const BLACK: Rgba<u8> = Rgba::<u8>([0, 0, 0, 255]);
+    const WIDTH: u32 = 600u32;
+    const HEIGHT: u32 = 300u32;
+    const PADDING: u32 = 40u32;
+    const TITLE_SCALE: PxScale = PxScale {
+        x: 24.0,
+        y: 24.0,
+    };
+    const HEADING_SCALE: PxScale = PxScale {
+        x: 18.0,
+        y: 18.0,
+    };
+    const BODY_SCALE: PxScale = PxScale {
+        x: 16.0,
+        y: 16.0,
+    };
+
+    macro_rules! create_buffer {
+        ($height:expr) => {
+            Image::ImageBuffer {
+                height: $height,
+                xdim: 2,
+                rotation: Rotation::Zero,
+                foreground: Color::new([0, 0, 0, 255]),
+                background: Color::new([255, 255, 255, 255]),
+            }
+        }
+    }
+
+    pub fn create_badge(client_id_short: &str, client_name: &str, library_name: &str) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
+        let bold_font = FontRef::try_from_slice(include_bytes!("assets/bold_font.otf")).unwrap();
+        let regular_font = FontRef::try_from_slice(include_bytes!("assets/regular_font.otf")).unwrap();
+
         let barcode = Code128::new(format!("\u{0181}{}", client_id_short)).unwrap();
 
-        let buffer = Image::image_buffer(50);
+        let buffer = create_buffer!(75);
         let encoded = barcode.encode();
-        let mut image = buffer.generate_buffer(&encoded[..]).unwrap();
+        let barcode_image = buffer.generate_buffer(&encoded[..]).unwrap();
 
-        image.save("test.png").unwrap()
+        let mut image = RgbaImage::new(WIDTH, HEIGHT);
+
+        //border and background (black border and white background)
+        draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(WIDTH, HEIGHT), BLACK);
+        draw_filled_rect_mut(&mut image, Rect::at(2, 2).of_size(WIDTH - 4, HEIGHT - 4), Rgba([255, 255, 255, 255]));
+
+        //copying barcode into image
+        image.copy_from(&barcode_image, (WIDTH - barcode_image.width()) / 2, HEIGHT - barcode_image.height() - PADDING / 2).unwrap();
+
+        let title = format!("Biblioteca {}", library_name);
+        let (w, _) = text_size(TITLE_SCALE, &bold_font, &title);
+
+        draw_text_mut(&mut image, BLACK, ((WIDTH - w) / 2) as i32, 12, TITLE_SCALE, &bold_font, &title);
+        draw_text_mut(&mut image, BLACK, PADDING as i32, 80, HEADING_SCALE, &bold_font, "Nume complet");
+        draw_text_mut(&mut image, BLACK, PADDING as i32, 100, BODY_SCALE, &regular_font, client_name);
+
+
+        let (w, _) = text_size(HEADING_SCALE, &bold_font, "Emis pe");
+        draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 80, HEADING_SCALE, &bold_font, "Emis pe");
+        let (w, _) = text_size(BODY_SCALE, &regular_font, "12.05.2024");
+        draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 100, BODY_SCALE, &regular_font, "12.05.2024");
+        return image;
     }
 }
