@@ -8,7 +8,7 @@ export default function Navigation() {
             <nav className="flex justify-around items-center w-2/3 py-1.5 mr-auto">
                 <NavLink to={"/books"} className="text-xl lg:text-3xl">Cărți</NavLink>
                 <NavLink to={"/clients"} className="text-xl lg:text-3xl">Clienți</NavLink>
-                <NavLink to={"/lookup"} className="text-xl lg:text-3xl">API Lookup</NavLink>
+                <NavLink to={"/lookup"} className="text-xl lg:text-3xl">Caută ISBN</NavLink>
             </nav>
             <AuthStatus/>
         </div>
