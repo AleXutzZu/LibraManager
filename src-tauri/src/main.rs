@@ -323,6 +323,18 @@ fn download_client_badge(settings_loader: State<SettingsLoader>, client_id_short
     Ok(())
 }
 
+#[tauri::command]
+fn fetch_counts(database: State<DatabaseConnection>) -> SerializedResult<(i64, i64)> {
+    use libra_manager::schema::books::dsl::*;
+    use libra_manager::schema::clients::dsl::*;
+    use diesel::{QueryDsl, RunQueryDsl};
+
+    let client = &mut *database.client.lock().unwrap();
+    let result_books = books.count().get_result(client)?;
+    let result_clients = clients.count().get_result(client)?;
+    Ok((result_books, result_clients))
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -351,7 +363,8 @@ fn main() {
             create_user,
             delete_user,
             lookup_book,
-            download_client_badge
+            download_client_badge,
+            fetch_counts
         ]).
         setup(|app| {
             let mut app_data_path = app.path_resolver().app_data_dir().unwrap();

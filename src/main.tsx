@@ -4,7 +4,7 @@ import Root from "./Root.tsx";
 import "./styles.css";
 import {createBrowserRouter, redirect, RouterProvider} from "react-router-dom";
 import {authProvider} from "./auth/auth.ts";
-import HomePage from "./components/index/HomePage.tsx";
+import HomePage, {loader as homePageLoader} from "./components/index/HomePage.tsx";
 import LoginPage, {action as loginAction, loader as loginLoader} from "./components/login/LoginPage.tsx";
 import BooksPage, {loader as booksLoader} from "./components/books/BooksPage.tsx";
 import BookInfo, {deleteAction as deleteBookAction, loader as bookInfoLoader} from "./components/books/BookInfo.tsx";
@@ -53,6 +53,7 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <HomePage/>,
+                loader: homePageLoader,
             },
             {
                 path: "settings",
