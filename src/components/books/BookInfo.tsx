@@ -40,8 +40,8 @@ export default function BookInfo() {
     const {book, clients, history} = useLoaderData() as LoaderData;
     return (
         <div className="overflow-auto flex-grow flex p-5">
-            <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md min-w-fit lg:w-2/5 m-auto">
-                <div className="py-8 px-4 mx-auto lg:py-16">
+            <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md lg:w-2/5 m-auto">
+                <div className="py-8 px-4 mx-auto lg:py-16 min-w-96">
                     <h2 className="mb-4 text-2xl font-bold">Informații carte</h2>
                     <div className="grid grid-cols-2 gap-6">
                         <div className="col-span-2">

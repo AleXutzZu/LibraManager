@@ -74,7 +74,7 @@ export default function UserManagement() {
 
     return (
         <div className="w-full flex justify-start items-start h-full overflow-auto">
-            <div className="flex flex-col space-y-4 h-full items-start w-52">
+            <div className="flex flex-col space-y-4 h-full items-start w-52 flex-shrink-0">
                 <input value={search} onChange={(e) => setSearch(e.target.value)}
                        className="px-2 py-2 border rounded-xl w-full" placeholder="Caută..."/>
                 <div className="overflow-auto flex flex-col space-y-2 w-full divide-y">

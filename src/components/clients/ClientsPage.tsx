@@ -49,7 +49,7 @@ export default function ClientsPage() {
     }, [clients, search]);
 
     return <div className="flex h-full overflow-auto">
-        <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center justify-start">
+        <div className="flex flex-col w-52 lg:w-80 bg-black-10 items-center justify-start flex-shrink-0">
             <form className="flex justify-between py-4 w-full px-4">
                 <input value={search} className="w-full mr-3 rounded-lg border p-0.5" placeholder={"Caută..."}
                        onChange={(event) => setSearch(event.target.value)}/>
