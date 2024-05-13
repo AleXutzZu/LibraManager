@@ -94,6 +94,12 @@ export default function ClientInfo() {
     const decodeHints = new Map<DecodeHintType, any>();
     decodeHints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.EAN_13]);
 
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        if (navigation.state === "loading" && !navigation.formData) setMessage(null);
+    }, [navigation]);
+
     return (
         <div className="overflow-auto flex-grow flex p-5">
             <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md lg:w-2/5 m-auto">
@@ -203,16 +209,16 @@ export default function ClientInfo() {
                                 date: format(new Date(), "yyyy-MM-dd"),
                             };
 
-                            const path = await invoke("download_client_badge", args) as string;
-                            setMessage(path);
+                            await invoke("download_client_badge", args);
+                            setMessage(`Legitimație generată cu succes. Poate fi accesată în folderul Documents.`);
                         } catch (error) {
-                            setMessage("S-a produs o eroare. Cel mai probabil nu există drepturi de scriere a fișierului");
+                            setMessage("S-a produs o eroare. Cel mai probabil nu există drepturi de scriere a fișierului.");
                         }
                     }}
                             className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
                         Emite legitimație
                     </button>
-                    {message && <h1 className="">{message}</h1>}
+                    {message && <h1 className="font-medium mt-4 text-sm max-w-40">{message}</h1>}
                 </div>
             </div>
         </div>
