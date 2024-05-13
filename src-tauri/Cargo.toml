@@ -13,7 +13,7 @@ edition = "2021"
 tauri-build = { version = "1.4", features = [] }
 
 [dependencies]
-tauri = { version = "1.4", features = [ "fs-read-file", "fs-write-file", "shell-open"] }
+tauri = { version = "1.4", features = [ "window-hide", "window-show", "window-close", "window-unminimize", "window-maximize", "window-start-dragging", "window-unmaximize", "window-minimize", "fs-read-file", "fs-write-file", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 diesel = { version = "2.1.0", features = ["sqlite", "chrono"] }
 libsqlite3-sys = { version = "0.28.0", features = ["bundled"] }

@@ -24,6 +24,17 @@
                 "scope": [
                     "$APPDATA/*"
                 ]
+            },
+            "window": {
+                "all": false,
+                "close": true,
+                "hide": true,
+                "show": true,
+                "maximize": true,
+                "minimize": true,
+                "unmaximize": true,
+                "unminimize": true,
+                "startDragging": true
             }
         },
         "bundle": {
@@ -47,7 +58,8 @@
                 "resizable": true,
                 "title": "LibraManager",
                 "width": 800,
-                "height": 800
+                "height": 800,
+                "decorations": false
             }
         ]
     }
