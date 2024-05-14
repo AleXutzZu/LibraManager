@@ -39,6 +39,8 @@ export async function loader() {
 export default function BookLookupPage() {
     const [book, setBook] = useState<BookData | null | undefined>(undefined);
     const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+
     const validationSchema = Yup.object({
         isbn: Yup.string().required("ISBN-ul este obligatoriu").matches(/^\d{13}$/, {message: "ISBN-ul este invalid"})
     })
@@ -48,15 +50,16 @@ export default function BookLookupPage() {
             <Formik initialValues={{
                 isbn: "",
             }} onSubmit={async (values) => {
+                setBook(undefined);
+                setError(false);
+                setLoading(true);
                 try {
-                    setBook(undefined);
-                    setError(false);
                     const result: BookData | null = await invoke("lookup_book", {isbn: values.isbn});
                     setBook(result);
                 } catch (error) {
-                    console.log(error);
                     setError(true);
                 }
+                setLoading(false);
             }} validationSchema={validationSchema}>
                 <FormikForm className="mt-16 w-2/3 max-w-2xl flex-col flex items-start space-y-2">
                     <div className="text-red font-medium text-sm h-[14px] pl-1">
@@ -79,6 +82,37 @@ export default function BookLookupPage() {
                 <h1 className="text-red text-lg font-bold px-5 text-center">Cartea căutată nu există din păcate în baza
                     de date OpenLibrary</h1>}
             {book && <BookDisplay {...book}/>}
+            {loading && <LoadingSkeleton/>}
+        </div>
+    );
+}
+
+function LoadingSkeleton() {
+    return (
+        <div className="w-full max-w-3xl px-10 space-y-5 flex flex-col overflow-auto animate-pulse">
+            <div className="w-64 bg-black-10 rounded-md h-6"></div>
+            <div className="flex justify-between">
+                <div className="grid grid-cols-2 w-2/3">
+                    <div className="w-full">
+                        <div className="mb-2 w-36 bg-black-10 rounded-md h-6"></div>
+                        <div className="w-28 bg-black-10 rounded-md h-6"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="mb-2 w-36 bg-black-10 rounded-md h-6"></div>
+                        <div className="w-28 bg-black-10 rounded-md h-6"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="mb-2 w-36 bg-black-10 rounded-md h-6"></div>
+                        <div className="w-28 bg-black-10 rounded-md h-6"></div>
+                    </div>
+                    <div className="w-full">
+                        <div className="mb-2 w-36 bg-black-10 rounded-md h-6"></div>
+                        <div className="w-28 bg-black-10 rounded-md h-6"></div>
+                    </div>
+                </div>
+                <div className="w-1/3 h-64 bg-black-10 rounded-lg">
+                </div>
+            </div>
         </div>
     );
 }
