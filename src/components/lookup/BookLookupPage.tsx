@@ -44,7 +44,7 @@ export default function BookLookupPage() {
     })
 
     return (
-        <div className="flex-grow flex flex-col items-center space-y-8">
+        <div className="flex-grow flex flex-col items-center space-y-8 overflow-auto">
             <Formik initialValues={{
                 isbn: "",
             }} onSubmit={async (values) => {
@@ -99,7 +99,7 @@ function BookDisplay(props: BookData) {
     }
 
     return (
-        <div className="w-full max-w-3xl px-10 space-y-5 flex flex-col">
+        <div className="w-full max-w-3xl px-10 space-y-5 flex flex-col overflow-auto">
             <h1 className="font-bold text-lg">{props.title}</h1>
             <div className="flex justify-between">
                 <div className="grid grid-cols-2 w-2/3">
