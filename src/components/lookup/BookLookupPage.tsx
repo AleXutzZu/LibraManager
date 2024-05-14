@@ -13,7 +13,7 @@ type Author = {
 type BookData = {
     title: string,
     publishDate: string,
-    covers: number[],
+    covers?: number[],
     authors?: Author[],
     numberOfPages?: number,
     isbn13: string[],
@@ -155,8 +155,10 @@ function BookDisplay(props: BookData) {
                     </div>
                 </div>
                 <div className="w-1/3 h-64">
-                    <img src={`https://covers.openlibrary.org/b/id/${props.covers[0]}-L.jpg`} alt="Coperta cărții"
-                         className="w-full h-full object-contain"/>
+                    {props.covers &&
+                        <img src={`https://covers.openlibrary.org/b/id/${props.covers[0]}-L.jpg`} alt="Coperta cărții"
+                             className="w-full h-full object-contain"/>}
+                    {!props.covers && <h1 className="font-bold m-auto text-lg text-red">Nicio copertă găsită</h1>}
                 </div>
             </div>
             <AddBook {...props}/>

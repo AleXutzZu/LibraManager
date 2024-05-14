@@ -146,7 +146,7 @@ pub mod book_api {
     #[derive(Deserialize, Debug)]
     struct OpenLibraryBookData {
         pub title: String,
-        pub covers: Vec<i64>,
+        pub covers: Option<Vec<i64>>,
         pub publish_date: String,
         pub authors: Option<Vec<OpenLibraryKey>>,
         pub works: Option<Vec<OpenLibraryKey>>,
@@ -209,7 +209,7 @@ pub mod book_api {
     #[serde(rename_all = "camelCase")]
     pub struct BookData {
         pub title: String,
-        pub covers: Vec<i64>,
+        pub covers: Option<Vec<i64>>,
         pub publish_date: String,
         pub authors: Option<Vec<Author>>,
         pub number_of_pages: Option<i64>,
