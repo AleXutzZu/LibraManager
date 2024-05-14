@@ -10,7 +10,7 @@ export default function TitleBar() {
 
     return (
         <div data-tauri-drag-region={true} className="flex justify-between h-8 bg-black-25 items-center px-2 border-b">
-            <h1 className="font-medium">LibraManager</h1>
+            <img src="/public/logo.png" alt="Logo" className="h-6 w-auto" data-tauri-drag-region={true}/>
             <div className="flex space-x-4 items-center justify-center">
                 <div className="cursor-pointer" onClick={() => appWindow.minimize()}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
