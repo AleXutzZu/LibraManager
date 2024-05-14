@@ -130,7 +130,7 @@ pub mod barcode {
 
     const ISBN_WIDTH: u32 = 220u32;
     const ISBN_HEIGHT: u32 = 100u32;
-    const ISBN_PADDING: u32 = 5u32;
+    const ISBN_PADDING: u32 = 1u32;
 
     const TITLE_SCALE: PxScale = PxScale {
         x: 24.0,
@@ -213,7 +213,7 @@ pub mod barcode {
         image.copy_from(&barcode_image, (ISBN_WIDTH - barcode_image.width()) / 2, 0).unwrap();
 
         let (w, _) = text_size(ISBN_SCALE, &bold_font, isbn);
-        draw_text_mut(&mut image, BLACK, ((ISBN_WIDTH - w) / 2) as i32, (barcode_image.height() + 1) as i32, ISBN_SCALE, &bold_font, isbn);
+        draw_text_mut(&mut image, BLACK, ((ISBN_WIDTH - w) / 2) as i32, (barcode_image.height() + ISBN_PADDING) as i32, ISBN_SCALE, &bold_font, isbn);
         return image;
     }
 }
