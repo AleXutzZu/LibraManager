@@ -1,11 +1,22 @@
 import {appWindow} from "@tauri-apps/api/window";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import {UnlistenFn} from "@tauri-apps/api/helpers/event";
 
 export default function TitleBar() {
     const [maximised, setMaximised] = useState<boolean>(false);
-
+    const unsubscribeRef = useRef<UnlistenFn | null>(null);
     useEffect(() => {
-        appWindow.isMaximized().then(result => setMaximised(result));
+
+        const toggle = async () => {
+            return await appWindow.onResized(async () => {
+                setMaximised(await appWindow.isMaximized());
+            });
+        }
+        toggle().then(f => unsubscribeRef.current = f);
+
+        return () => {
+            unsubscribeRef.current && unsubscribeRef.current();
+        }
     }, []);
 
     return (
@@ -21,17 +32,12 @@ export default function TitleBar() {
 
                 </div>
                 <div className="cursor-pointer" onClick={async () => {
-                    if (await appWindow.isMaximized()) {
-                        await appWindow.unmaximize();
-                        setMaximised(false);
-                    } else {
-                        setMaximised(true);
-                        await appWindow.maximize();
-                    }
+                    await appWindow.toggleMaximize();
                 }}>
                     {maximised &&
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                             stroke="currentColor" className="w-5 h-5 hover:stroke-orange transition ease-in-out duration-150">
+                             stroke="currentColor"
+                             className="w-5 h-5 hover:stroke-orange transition ease-in-out duration-150">
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"/>
                         </svg>}
