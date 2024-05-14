@@ -10,4 +10,9 @@
     .display-none {
         display: none;
     }
+
+    .text-2xs {
+        font-size: 0.6rem;
+        line-height: 0.8rem;
+    }
 }

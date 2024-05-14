@@ -1,10 +1,12 @@
 import {appWindow} from "@tauri-apps/api/window";
+import {getVersion} from "@tauri-apps/api/app";
 import {useEffect, useRef, useState} from "react";
 import {UnlistenFn} from "@tauri-apps/api/helpers/event";
 
 export default function TitleBar() {
     const [maximised, setMaximised] = useState<boolean>(false);
     const unsubscribeRef = useRef<UnlistenFn | null>(null);
+    const [version, setVersion] = useState("");
     useEffect(() => {
 
         const toggle = async () => {
@@ -19,11 +21,18 @@ export default function TitleBar() {
         }
     }, []);
 
+    useEffect(() => {
+        getVersion().then(result => setVersion(result));
+    }, []);
+
     return (
         <div data-tauri-drag-region={true} className="flex justify-between h-8 bg-black-25 items-center px-2 border-b">
-            <img src="/logo.png" alt="Logo" className="h-6 w-auto" data-tauri-drag-region={true}/>
+            <div className="flex">
+                <img src="/logo.png" alt="Logo" className="h-6 w-auto self-center" data-tauri-drag-region={true}/>
+                <p className="text-2xs self-start cursor-default" data-tauri-drag-region={true}>v{version}</p>
+            </div>
             <div className="flex space-x-4 items-center justify-center">
-                <div className="cursor-pointer" onClick={() => appWindow.minimize()}>
+            <div className="cursor-pointer" onClick={() => appWindow.minimize()}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                          stroke="currentColor"
                          className="w-5 h-5 hover:stroke-green transition ease-in-out duration-150">
