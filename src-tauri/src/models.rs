@@ -133,6 +133,15 @@ pub mod book_api {
         }
     }
 
+    #[derive(Deserialize)]
+    struct WorkAuthor {
+        pub author: OpenLibraryKey,
+    }
+
+    #[derive(Deserialize)]
+    struct Work {
+        pub authors: Option<Vec<WorkAuthor>>,
+    }
 
     #[derive(Deserialize, Debug)]
     struct OpenLibraryBookData {
@@ -140,6 +149,7 @@ pub mod book_api {
         pub covers: Vec<i64>,
         pub publish_date: String,
         pub authors: Option<Vec<OpenLibraryKey>>,
+        pub works: Option<Vec<OpenLibraryKey>>,
         pub number_of_pages: Option<i64>,
         pub isbn_13: Vec<String>,
     }
@@ -151,6 +161,36 @@ pub mod book_api {
 
                 for key in x {
                     result.push(key.fetch_data::<Author>().await?);
+                }
+
+                Ok(Some(result))
+            } else if let Some(x) = &self.works {
+                let mut works: Vec<Work> = Vec::new();
+
+                for key in x {
+                    works.push(key.fetch_data::<Work>().await?);
+                }
+
+                let count_none = works.iter().fold(0, |cnt, val| {
+                    if let Some(_x) = &val.authors {
+                        cnt
+                    } else {
+                        cnt + 1
+                    }
+                });
+
+                if count_none == works.len() {
+                    return Ok(None);
+                }
+
+                let mut result: Vec<Author> = Vec::new();
+
+                for work in works {
+                    if let Some(x) = &work.authors {
+                        for work_author in x {
+                            result.push(work_author.author.fetch_data::<Author>().await?);
+                        }
+                    }
                 }
 
                 Ok(Some(result))
