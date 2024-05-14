@@ -324,6 +324,17 @@ fn download_client_badge(settings_loader: State<SettingsLoader>, client_id_short
 }
 
 #[tauri::command]
+fn download_book_isbn(isbn: String) -> SerializedResult<()> {
+    let buffer = libra_manager::barcode::create_isbn(&isbn);
+
+    let mut documents_path = tauri::api::path::document_dir().unwrap_or(std::path::PathBuf::new());
+
+    documents_path.push(format!("{}.png", isbn));
+    buffer.save(&documents_path)?;
+    Ok(())
+}
+
+#[tauri::command]
 fn fetch_counts(database: State<DatabaseConnection>) -> SerializedResult<(i64, i64)> {
     use libra_manager::schema::books::dsl::*;
     use libra_manager::schema::clients::dsl::*;
@@ -364,6 +375,7 @@ fn main() {
             delete_user,
             lookup_book,
             download_client_badge,
+            download_book_isbn,
             fetch_counts
         ]).
         setup(|app| {

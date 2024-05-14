@@ -118,14 +118,20 @@ pub mod barcode {
     use barcoders::sym::code128::Code128;
     use image::{Rgba, RgbaImage, GenericImage, ImageBuffer};
     use ab_glyph::{FontRef, PxScale};
+    use barcoders::sym::ean13::EAN13;
     use imageproc::drawing::{draw_text_mut, draw_filled_rect_mut, text_size};
     use imageproc::rect::Rect;
     use chrono::NaiveDate;
 
     const BLACK: Rgba<u8> = Rgba::<u8>([0, 0, 0, 255]);
-    const WIDTH: u32 = 600u32;
-    const HEIGHT: u32 = 300u32;
-    const PADDING: u32 = 40u32;
+    const BADGE_WIDTH: u32 = 600u32;
+    const BADGE_HEIGHT: u32 = 300u32;
+    const BADGE_PADDING: u32 = 40u32;
+
+    const ISBN_WIDTH: u32 = 220u32;
+    const ISBN_HEIGHT: u32 = 100u32;
+    const ISBN_PADDING: u32 = 5u32;
+
     const TITLE_SCALE: PxScale = PxScale {
         x: 24.0,
         y: 24.0,
@@ -137,6 +143,11 @@ pub mod barcode {
     const BODY_SCALE: PxScale = PxScale {
         x: 16.0,
         y: 16.0,
+    };
+
+    const ISBN_SCALE: PxScale = PxScale {
+        x: 25.0,
+        y: 25.0,
     };
 
     macro_rules! create_buffer {
@@ -161,28 +172,48 @@ pub mod barcode {
         let encoded = barcode.encode();
         let barcode_image = buffer.generate_buffer(&encoded[..]).unwrap();
 
-        let mut image = RgbaImage::new(WIDTH, HEIGHT);
+        let mut image = RgbaImage::new(BADGE_WIDTH, BADGE_HEIGHT);
 
         //border and background (black border and white background)
-        draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(WIDTH, HEIGHT), BLACK);
-        draw_filled_rect_mut(&mut image, Rect::at(2, 2).of_size(WIDTH - 4, HEIGHT - 4), Rgba([255, 255, 255, 255]));
+        draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(BADGE_WIDTH, BADGE_HEIGHT), BLACK);
+        draw_filled_rect_mut(&mut image, Rect::at(2, 2).of_size(BADGE_WIDTH - 4, BADGE_HEIGHT - 4), Rgba([255, 255, 255, 255]));
 
         //copying barcode into image
-        image.copy_from(&barcode_image, (WIDTH - barcode_image.width()) / 2, HEIGHT - barcode_image.height() - PADDING / 2).unwrap();
+        image.copy_from(&barcode_image, (BADGE_WIDTH - barcode_image.width()) / 2, BADGE_HEIGHT - barcode_image.height() - BADGE_PADDING / 2).unwrap();
 
         let title = format!("Biblioteca {}", library_name);
         let (w, _) = text_size(TITLE_SCALE, &bold_font, &title);
 
-        draw_text_mut(&mut image, BLACK, ((WIDTH - w) / 2) as i32, 12, TITLE_SCALE, &bold_font, &title);
-        draw_text_mut(&mut image, BLACK, PADDING as i32, 80, HEADING_SCALE, &bold_font, "Nume complet");
-        draw_text_mut(&mut image, BLACK, PADDING as i32, 100, BODY_SCALE, &regular_font, client_name);
+        draw_text_mut(&mut image, BLACK, ((BADGE_WIDTH - w) / 2) as i32, 12, TITLE_SCALE, &bold_font, &title);
+        draw_text_mut(&mut image, BLACK, BADGE_PADDING as i32, 80, HEADING_SCALE, &bold_font, "Nume complet");
+        draw_text_mut(&mut image, BLACK, BADGE_PADDING as i32, 100, BODY_SCALE, &regular_font, client_name);
 
         let date_text = format!("{}", date.format("%d.%m.%Y"));
 
         let (w, _) = text_size(HEADING_SCALE, &bold_font, "Emis pe");
-        draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 80, HEADING_SCALE, &bold_font, "Emis pe");
+        draw_text_mut(&mut image, BLACK, (BADGE_WIDTH - BADGE_PADDING - w) as i32, 80, HEADING_SCALE, &bold_font, "Emis pe");
         let (w, _) = text_size(BODY_SCALE, &regular_font, &date_text);
-        draw_text_mut(&mut image, BLACK, (WIDTH - PADDING - w) as i32, 100, BODY_SCALE, &regular_font, &date_text);
+        draw_text_mut(&mut image, BLACK, (BADGE_WIDTH - BADGE_PADDING - w) as i32, 100, BODY_SCALE, &regular_font, &date_text);
+        return image;
+    }
+
+    pub fn create_isbn(isbn: &str) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
+        let bold_font = FontRef::try_from_slice(include_bytes!("assets/bold_font.otf")).unwrap();
+
+        let barcode = EAN13::new(isbn).unwrap();
+        let buffer = create_buffer!(75);
+
+        let encoded = barcode.encode();
+        let barcode_image = buffer.generate_buffer(&encoded[..]).unwrap();
+
+        let mut image = RgbaImage::new(ISBN_WIDTH, ISBN_HEIGHT);
+
+        draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(ISBN_WIDTH, ISBN_HEIGHT), Rgba([255, 255, 255, 255]));
+
+        image.copy_from(&barcode_image, (ISBN_WIDTH - barcode_image.width()) / 2, 0).unwrap();
+
+        let (w, _) = text_size(ISBN_SCALE, &bold_font, isbn);
+        draw_text_mut(&mut image, BLACK, ((ISBN_WIDTH - w) / 2) as i32, (barcode_image.height() + 1) as i32, ISBN_SCALE, &bold_font, isbn);
         return image;
     }
 }

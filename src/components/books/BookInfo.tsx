@@ -1,9 +1,18 @@
 import {invoke} from "@tauri-apps/api/tauri";
 import {Book} from "./BooksPage.tsx";
-import {ActionFunctionArgs, Form, Link, LoaderFunctionArgs, redirect, useLoaderData} from "react-router-dom";
+import {
+    ActionFunctionArgs,
+    Form,
+    Link,
+    LoaderFunctionArgs,
+    redirect,
+    useLoaderData,
+    useNavigation
+} from "react-router-dom";
 import {Borrow} from "../clients/ClientInfo.tsx";
 import {Client} from "../clients/ClientsPage.tsx";
 import {compareAsc, compareDesc} from "date-fns";
+import {useEffect, useState} from "react";
 
 type PathParams = {
     isbn: string,
@@ -36,8 +45,30 @@ export async function deleteAction({params}: ActionFunctionArgs<PathParams>) {
     return redirect("/books");
 }
 
+function checkISBN(isbn: string): boolean {
+    if (isbn.match(/^[0-9]{13}$/) == null) return false;
+    let sum = 0;
+    for (let i = 0; i < 12; ++i) {
+        sum = sum + Number(isbn[i]) * (i % 2 == 0 ? 1 : 3);
+    }
+    sum = sum % 10;
+    const r = 10 - sum;
+    if (r == 10) return Number(isbn[12]) == 0;
+    return Number(isbn[12]) == r;
+}
+
 export default function BookInfo() {
     const {book, clients, history} = useLoaderData() as LoaderData;
+    const [message, setMessage] = useState<string | null>(null);
+
+    const isValid = checkISBN(book.isbn);
+
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        if (navigation.state === "loading" && !navigation.formData) setMessage(null);
+    }, [navigation]);
+
     return (
         <div className="overflow-auto flex-grow flex p-5">
             <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md w-4/5 max-w-xl m-auto flex-shrink-0">
@@ -93,6 +124,23 @@ export default function BookInfo() {
                                 <HistoryCard {...borrowerClient} key={borrowerClient.borrow.id}/>))}
                         </div>
                     </details>
+                    {!isValid &&
+                        <h1 className="text-red font-medium">Această carte folosește un ISBN care nu este valid și nu se
+                            poate genera un cod de bare.</h1>}
+                    {isValid && <button onClick={async () => {
+                        setMessage(null);
+                        try {
+                            await invoke("download_book_isbn", {isbn: book.isbn});
+                            setMessage(`Cod de bare generat cu succes. Poate fi accesat în folderul Documents.`);
+                        } catch (error) {
+                            console.log(error);
+                            setMessage("S-a produs o eroare. Cel mai probabil nu există drepturi de scriere a fișierului.");
+                        }
+                    }}
+                                        className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
+                        Emite cod de bare
+                    </button>}
+                    {message && <h1 className="font-medium mt-4 text-sm">{message}</h1>}
                 </div>
             </div>
         </div>
