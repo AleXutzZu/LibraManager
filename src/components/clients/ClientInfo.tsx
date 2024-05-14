@@ -218,7 +218,7 @@ export default function ClientInfo() {
                             className="px-1.5 py-1.5 text-black-5 text-lg font-medium text-center bg-green rounded-2xl">
                         Emite legitimație
                     </button>
-                    {message && <h1 className="font-medium mt-4 text-sm max-w-40">{message}</h1>}
+                    {message && <h1 className="font-medium mt-4 text-sm">{message}</h1>}
                 </div>
             </div>
         </div>
