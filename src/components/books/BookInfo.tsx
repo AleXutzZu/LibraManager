@@ -40,8 +40,8 @@ export default function BookInfo() {
     const {book, clients, history} = useLoaderData() as LoaderData;
     return (
         <div className="overflow-auto flex-grow flex p-5">
-            <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md lg:w-2/5 m-auto">
-                <div className="py-8 px-4 mx-auto lg:py-16 min-w-96">
+            <div className="bg-black-5 rounded-xl shadow-black-10 shadow-md w-4/5 max-w-xl m-auto flex-shrink-0">
+                <div className="py-8 px-4 mx-auto lg:py-16">
                     <h2 className="mb-4 text-2xl font-bold">Informații carte</h2>
                     <div className="grid grid-cols-2 gap-6">
                         <div className="col-span-2">
@@ -75,7 +75,7 @@ export default function BookInfo() {
                             </button>
                         </Form>
                     </div>
-                    <details className="mt-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
+                    <details className="mt-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg w-full">
                         <summary className="text-xl font-bold">Împrumuturi</summary>
                         <div className="w-full mt-10 max-h-96 overflow-auto">
                             {clients.length === 0 &&
@@ -84,7 +84,7 @@ export default function BookInfo() {
                                 <BorrowCard {...borrowerClient} key={borrowerClient.borrow.id}/>))}
                         </div>
                     </details>
-                    <details className="mb-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg">
+                    <details className="mb-3 open:ring-1 open:ring-black-100/5 p-3 open:shadow-lg w-full">
                         <summary className="text-xl font-bold">Istoric</summary>
                         <div className="w-full mt-10 max-h-96 overflow-auto">
                             {history.length === 0 &&
