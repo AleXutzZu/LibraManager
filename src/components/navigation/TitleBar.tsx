@@ -32,13 +32,11 @@ export default function TitleBar() {
                 <p className="text-2xs self-start cursor-default" data-tauri-drag-region={true}>v{version}</p>
             </div>
             <div className="flex space-x-4 items-center justify-center">
-            <div className="cursor-pointer" onClick={() => appWindow.minimize()}>
+                <div className="cursor-pointer" onClick={() => appWindow.minimize()}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                         stroke="currentColor"
-                         className="w-5 h-5 hover:stroke-green transition ease-in-out duration-150">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 4.5-15 15m0 0h11.25m-11.25 0V8.25"/>
+                         stroke="currentColor" className="w-5 h-5 hover:stroke-green transition ease-in-out duration-150">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14"/>
                     </svg>
-
                 </div>
                 <div className="cursor-pointer" onClick={async () => {
                     await appWindow.toggleMaximize();
