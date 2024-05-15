@@ -310,9 +310,9 @@ async fn lookup_book(isbn: String) -> SerializedResult<Option<BookData>> {
 }
 
 #[tauri::command]
-fn download_client_badge(settings_loader: State<SettingsLoader>, client_id_short: String, client_name: String, date: NaiveDate) -> SerializedResult<()> {
+fn download_client_badge(settings_loader: State<SettingsLoader>, client_id: String, client_name: String, date: NaiveDate) -> SerializedResult<()> {
     let library_name = settings_loader.load().unwrap().library_name;
-    let buffer = libra_manager::barcode::create_badge(&client_id_short, &client_name, &library_name, date);
+    let buffer = libra_manager::barcode::create_badge(&client_id, &client_name, &library_name, date);
 
     let mut documents_path = tauri::api::path::document_dir().unwrap_or(std::path::PathBuf::new());
 

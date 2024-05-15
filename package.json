@@ -18,7 +18,7 @@
     "react-media-devices": "^1.1.5",
     "react-router-dom": "^6.22.3",
     "react-zxing": "^2.0.0",
-    "short-uuid": "^5.2.0",
+    "short-unique-id": "^5.2.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {

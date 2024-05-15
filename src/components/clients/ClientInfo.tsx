@@ -1,5 +1,5 @@
 import {invoke} from "@tauri-apps/api/tauri";
-import {Client, translator} from "./ClientsPage.tsx";
+import {Client} from "./ClientsPage.tsx";
 import {
     ActionFunctionArgs,
     Form,
@@ -15,7 +15,7 @@ import {Form as FormikForm, Formik} from "formik";
 import Input from "../util/Input.tsx";
 import Scanner from "../util/Scanner.tsx";
 import {BarcodeFormat, DecodeHintType} from "@zxing/library";
-import {addDays, format, compareAsc, compareDesc} from "date-fns";
+import {addDays, compareAsc, compareDesc, format} from "date-fns";
 import {useEffect, useState} from "react";
 
 type PathParams = {
@@ -119,12 +119,8 @@ export default function ClientInfo() {
                             <h3 className="text-lg block w-full">{client.phone}</h3>
                         </div>
                         <div className="w-full">
-                            <h3 className="block mb-2 text-lg font-medium">ID (scurt)</h3>
-                            <h3 className="text-lg block w-full">{translator.fromUUID(client.id)}</h3>
-                        </div>
-                        <div className="col-span-2">
-                            <h3 className="block mb-2 text-lg font-medium">ID (lung)</h3>
-                            <h3 className="text-xs block w-full lg:text-sm">{client.id}</h3>
+                            <h3 className="block mb-2 text-lg font-medium">ID</h3>
+                            <h3 className="text-lg block w-full">{client.id}</h3>
                         </div>
 
                         <div className="w-full">
@@ -204,7 +200,7 @@ export default function ClientInfo() {
                         setMessage(null);
                         try {
                             const args = {
-                                clientIdShort: translator.fromUUID(client.id),
+                                clientId: client.id,
                                 clientName: `${client.firstName} ${client.lastName}`,
                                 date: format(new Date(), "yyyy-MM-dd"),
                             };

@@ -124,8 +124,9 @@ pub mod barcode {
     use chrono::NaiveDate;
 
     const BLACK: Rgba<u8> = Rgba::<u8>([0, 0, 0, 255]);
-    const BADGE_WIDTH: u32 = 600u32;
-    const BADGE_HEIGHT: u32 = 300u32;
+    const WHITE: Rgba<u8> = Rgba::<u8>([255, 255, 255, 255]);
+    const BADGE_WIDTH: u32 = 450u32;
+    const BADGE_HEIGHT: u32 = 250u32;
     const BADGE_PADDING: u32 = 40u32;
 
     const ISBN_WIDTH: u32 = 220u32;
@@ -162,11 +163,11 @@ pub mod barcode {
         }
     }
 
-    pub fn create_badge(client_id_short: &str, client_name: &str, library_name: &str, date: NaiveDate) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
+    pub fn create_badge(client_id: &str, client_name: &str, library_name: &str, date: NaiveDate) -> ImageBuffer<Rgba<u8>, Vec<u8>> {
         let bold_font = FontRef::try_from_slice(include_bytes!("assets/bold_font.otf")).unwrap();
         let regular_font = FontRef::try_from_slice(include_bytes!("assets/regular_font.otf")).unwrap();
 
-        let barcode = Code128::new(format!("\u{0181}{}", client_id_short)).unwrap();
+        let barcode = Code128::new(format!("\u{0181}{}", client_id)).unwrap();
 
         let buffer = create_buffer!(75);
         let encoded = barcode.encode();
@@ -176,7 +177,7 @@ pub mod barcode {
 
         //border and background (black border and white background)
         draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(BADGE_WIDTH, BADGE_HEIGHT), BLACK);
-        draw_filled_rect_mut(&mut image, Rect::at(2, 2).of_size(BADGE_WIDTH - 4, BADGE_HEIGHT - 4), Rgba([255, 255, 255, 255]));
+        draw_filled_rect_mut(&mut image, Rect::at(2, 2).of_size(BADGE_WIDTH - 4, BADGE_HEIGHT - 4), WHITE);
 
         //copying barcode into image
         image.copy_from(&barcode_image, (BADGE_WIDTH - barcode_image.width()) / 2, BADGE_HEIGHT - barcode_image.height() - BADGE_PADDING / 2).unwrap();
@@ -208,7 +209,7 @@ pub mod barcode {
 
         let mut image = RgbaImage::new(ISBN_WIDTH, ISBN_HEIGHT);
 
-        draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(ISBN_WIDTH, ISBN_HEIGHT), Rgba([255, 255, 255, 255]));
+        draw_filled_rect_mut(&mut image, Rect::at(0, 0).of_size(ISBN_WIDTH, ISBN_HEIGHT), WHITE);
 
         image.copy_from(&barcode_image, (ISBN_WIDTH - barcode_image.width()) / 2, 0).unwrap();
 

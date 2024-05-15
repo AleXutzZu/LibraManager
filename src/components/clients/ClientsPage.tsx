@@ -1,12 +1,12 @@
-import short from "short-uuid";
 import Scanner from "../util/Scanner.tsx";
 import {Link, Outlet, redirect, useLoaderData, useNavigate} from "react-router-dom";
 import {useMemo, useState} from "react";
 import {DecodeHintType, Result, BarcodeFormat} from "@zxing/library";
 import {invoke} from "@tauri-apps/api/tauri";
 import {authProvider} from "../../auth/auth.ts";
+import * as ShortUniqueId from "short-unique-id";
 
-export const translator = short(short.constants.cookieBase90);
+export const clientUniqueId = new ShortUniqueId();
 
 export type Client = {
     id: string,
@@ -32,8 +32,7 @@ export default function ClientsPage() {
     const navigate = useNavigate();
 
     const onDecode = (result: Result) => {
-        const id_short = result.getText();
-        const id = translator.toUUID(id_short);
+        const id = result.getText();
         navigate(`/clients/${id}`);
     }
 

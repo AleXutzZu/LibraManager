@@ -1,5 +1,5 @@
 import {ActionFunctionArgs, redirect, useActionData, useLoaderData, useNavigate, useSubmit} from "react-router-dom";
-import {Client, translator} from "./ClientsPage.tsx";
+import {Client} from "./ClientsPage.tsx";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import Input from "../util/Input.tsx";
@@ -84,8 +84,8 @@ export default function ClientEdit() {
                                                placeholder="Numărul de telefon"/>
                                     </div>
                                     <div className="w-full">
-                                        <h3 className="block mb-2 text-sm font-medium">ID (scurt)</h3>
-                                        <h3 className="text-lg pt-1 block w-full">{translator.fromUUID(client.id)}</h3>
+                                        <h3 className="block mb-2 text-sm font-medium">ID</h3>
+                                        <h3 className="text-lg pt-1 block w-full">{client.id}</h3>
                                     </div>
 
                                     <div className="w-full">

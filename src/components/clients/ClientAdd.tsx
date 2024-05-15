@@ -2,7 +2,7 @@ import {invoke} from "@tauri-apps/api/tauri";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import {useActionData, useSubmit} from "react-router-dom";
-import {Client, translator} from "./ClientsPage.tsx";
+import {Client, clientUniqueId} from "./ClientsPage.tsx";
 import Input from "../util/Input.tsx";
 
 type ClientResponse = {
@@ -12,7 +12,7 @@ type ClientResponse = {
 
 export async function action({request}: { request: Request }): Promise<ClientResponse> {
     const formData = await request.formData();
-    const id = translator.uuid() as string;
+    const id = clientUniqueId.rnd();
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
     const email = formData.get("email") as string;
