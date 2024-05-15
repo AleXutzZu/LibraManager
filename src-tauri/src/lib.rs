@@ -105,7 +105,7 @@ pub mod settings {
         }
 
         pub fn store(&self, config: Settings) -> Result<(), std::io::Error> {
-            let mut file = OpenOptions::new().write(true).create(true).open(&self.path)?;
+            let mut file = OpenOptions::new().write(true).create(true).truncate(true).open(&self.path)?;
             let data = toml::to_string_pretty(&config).unwrap();
             file.write_all(data.as_bytes())?;
             Ok(())
