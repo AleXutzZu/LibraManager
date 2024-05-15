@@ -4,9 +4,9 @@ import {useMemo, useState} from "react";
 import {DecodeHintType, Result, BarcodeFormat} from "@zxing/library";
 import {invoke} from "@tauri-apps/api/tauri";
 import {authProvider} from "../../auth/auth.ts";
-import * as ShortUniqueId from "short-unique-id";
+import ShortUniqueId from "short-unique-id";
 
-export const clientUniqueId = new ShortUniqueId();
+export const clientUniqueId = new ShortUniqueId({length: 6});
 
 export type Client = {
     id: string,
