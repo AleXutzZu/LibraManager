@@ -67,7 +67,7 @@ export default function BookLookupPage() {
                     </div>
                     <div className="flex justify-between items-center space-x-5 w-full">
                         <Field type="text" name="isbn" className="border text-sm rounded-lg block p-2.5 w-full"
-                               placeholder="Caută informații online după ISBN"/>
+                               placeholder="Caută informații online după ISBN" autoComplete="one-time-code"/>
                         <button type="submit"
                                 className="block items-center px-2 py-1.5 text-black-5 text-lg font-medium text-center bg-orange rounded-2xl">
                             Caută

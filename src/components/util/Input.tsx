@@ -6,12 +6,14 @@ type Props = {
     placeholder?: string,
     disabled?: boolean,
     children?: ReactNode,
+    autoComplete?: string,
     label: string,
     type: string,
     name: string,
 }
 
 const Input = ({label, children, ...props}: Props) => {
+    if (props.autoComplete == undefined) props.autoComplete = "one-time-code";
     const [field, meta] = useField({...props})
 
     const labelErrorClasses: string = "block mb-2 text-sm font-medium text-red";

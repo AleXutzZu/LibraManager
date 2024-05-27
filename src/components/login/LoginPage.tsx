@@ -16,13 +16,12 @@ export async function action({request}: ActionFunctionArgs) {
 
     try {
         await authProvider.login(username, password);
-
+        return redirect("/?index");
     } catch (error) {
         return {
             error: "Datele nu sunt corecte"
         }
     }
-    return redirect("/");
 }
 
 export default function LoginPage() {
@@ -35,7 +34,7 @@ export default function LoginPage() {
     });
 
     return (
-        <Formik initialValues={{username: "", password: ""}} onSubmit={(values) => {
+        <Formik initialValues={{username: "", password: ""}} onSubmit={async (values) => {
             submit(values, {method: "post"});
         }} validationSchema={validationSchema}>
 
