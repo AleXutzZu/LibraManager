@@ -18,6 +18,10 @@ A desktop solution for handling a book database for a library. Written in romani
 <br><br>
 <img src="https://github.com/user-attachments/assets/67b4d7c5-af70-4233-a8c0-f8c473f60b80" align="center"/>
 
+<h2>Quick Start</h2>
+<p>When starting the application, there will be one user account called <code>admin</code> with password <code>admin</code>. Use this to login and add more users and books and don't forget to change the password!</p>
+<p>Any account with admin permissions can access the administration tab where they can set the library name (which will be printed on the clients' badges) or set the default camera used for scanning barcodes.</p>
+<p>Adding books and clients can be done by regular users as well as generating barcodes for books and badges for clients. Users can also lookup ISBNs on the search tab and add missing books to the database.</p>
 <h2>Future improvements</h2>
 <ul>
   <li>A better search & filter algorithm for both client and book lookup</li>
