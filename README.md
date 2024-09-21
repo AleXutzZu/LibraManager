@@ -28,4 +28,3 @@ A desktop solution for handling a book database for a library. Written in romani
   <li>Support for ISBN-10 or other identification codes used for books</li>
   <li>Addition of client photos in the database and also in the generated badges</li>
 </ul>
-![image]()
